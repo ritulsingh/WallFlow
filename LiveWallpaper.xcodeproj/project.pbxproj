@@ -1,0 +1,389 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A11A11A11A11A11A11A11A40 /* LiveWallpaperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */; };
+		A11A11A11A11A11A11A11A41 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A21 /* AppDelegate.swift */; };
+		A11A11A11A11A11A11A11A42 /* DesktopWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */; };
+		A11A11A11A11A11A11A11A43 /* WallpaperWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A23 /* WallpaperWindow.swift */; };
+		A11A11A11A11A11A11A11A44 /* VideoLoopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */; };
+		A11A11A11A11A11A11A11A45 /* PowerMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */; };
+		A11A11A11A11A11A11A11A46 /* FullscreenMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */; };
+		A11A11A11A11A11A11A11A47 /* NSScreen+DisplayID.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */; };
+		A11A11A11A11A11A11A11A48 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A28 /* SettingsStore.swift */; };
+		A11A11A11A11A11A11A11A49 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A29 /* ContentView.swift */; };
+		A11A11A11A11A11A11A11A4A /* StatusMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */; };
+		A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2B /* SettingsView.swift */; };
+		A11A11A11A11A11A11A11A4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2C /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A11A11A11A11A11A11A11A06 /* LiveWallpaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveWallpaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWallpaperApp.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopWindowManager.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A23 /* WallpaperWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperWindow.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoopController.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerMonitor.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenMonitor.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+DisplayID.swift"; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A28 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuView.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A2B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A2C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A2D /* LiveWallpaper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveWallpaper.entitlements; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A11A11A11A11A11A11A11A04 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A11A11A11A11A11A11A11A07 = {
+			isa = PBXGroup;
+			children = (
+				A11A11A11A11A11A11A11A09 /* LiveWallpaper */,
+				A11A11A11A11A11A11A11A08 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A11A11A11A11A11A11A11A08 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A11A11A11A11A11A11A11A06 /* LiveWallpaper.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A11A11A11A11A11A11A11A09 /* LiveWallpaper */ = {
+			isa = PBXGroup;
+			children = (
+				A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */,
+				A11A11A11A11A11A11A11A21 /* AppDelegate.swift */,
+				A11A11A11A11A11A11A11A0A /* Engine */,
+				A11A11A11A11A11A11A11A0B /* Store */,
+				A11A11A11A11A11A11A11A0C /* UI */,
+				A11A11A11A11A11A11A11A2C /* Assets.xcassets */,
+				A11A11A11A11A11A11A11A2D /* LiveWallpaper.entitlements */,
+				A11A11A11A11A11A11A11A2E /* Info.plist */,
+			);
+			path = LiveWallpaper;
+			sourceTree = "<group>";
+		};
+		A11A11A11A11A11A11A11A0A /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */,
+				A11A11A11A11A11A11A11A23 /* WallpaperWindow.swift */,
+				A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */,
+				A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */,
+				A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */,
+				A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		A11A11A11A11A11A11A11A0B /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				A11A11A11A11A11A11A11A28 /* SettingsStore.swift */,
+			);
+			path = Store;
+			sourceTree = "<group>";
+		};
+		A11A11A11A11A11A11A11A0C /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A11A11A11A11A11A11A11A29 /* ContentView.swift */,
+				A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */,
+				A11A11A11A11A11A11A11A2B /* SettingsView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A11A11A11A11A11A11A11A02 /* LiveWallpaper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A11A11A11A11A11A11A11A0E /* Build configuration list for PBXNativeTarget "LiveWallpaper" */;
+			buildPhases = (
+				A11A11A11A11A11A11A11A03 /* Sources */,
+				A11A11A11A11A11A11A11A04 /* Frameworks */,
+				A11A11A11A11A11A11A11A05 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LiveWallpaper;
+			productName = LiveWallpaper;
+			productReference = A11A11A11A11A11A11A11A06 /* LiveWallpaper.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A11A11A11A11A11A11A11A01 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+			};
+			buildConfigurationList = A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "LiveWallpaper" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A11A11A11A11A11A11A11A07;
+			productRefGroup = A11A11A11A11A11A11A11A08 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A11A11A11A11A11A11A11A02 /* LiveWallpaper */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A11A11A11A11A11A11A11A05 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A11A11A11A11A11A11A11A4C /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A11A11A11A11A11A11A11A03 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A11A11A11A11A11A11A11A40 /* LiveWallpaperApp.swift in Sources */,
+				A11A11A11A11A11A11A11A41 /* AppDelegate.swift in Sources */,
+				A11A11A11A11A11A11A11A42 /* DesktopWindowManager.swift in Sources */,
+				A11A11A11A11A11A11A11A43 /* WallpaperWindow.swift in Sources */,
+				A11A11A11A11A11A11A11A44 /* VideoLoopController.swift in Sources */,
+				A11A11A11A11A11A11A11A45 /* PowerMonitor.swift in Sources */,
+				A11A11A11A11A11A11A11A46 /* FullscreenMonitor.swift in Sources */,
+				A11A11A11A11A11A11A11A47 /* NSScreen+DisplayID.swift in Sources */,
+				A11A11A11A11A11A11A11A48 /* SettingsStore.swift in Sources */,
+				A11A11A11A11A11A11A11A49 /* ContentView.swift in Sources */,
+				A11A11A11A11A11A11A11A4A /* StatusMenuView.swift in Sources */,
+				A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A11A11A11A11A11A11A11A0F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A11A11A11A11A11A11A11A10 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		A11A11A11A11A11A11A11A11 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiveWallpaper/LiveWallpaper.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LiveWallpaper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.LiveWallpaper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A11A11A11A11A11A11A11A12 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LiveWallpaper/LiveWallpaper.entitlements;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LiveWallpaper/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.LiveWallpaper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "LiveWallpaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A11A11A11A11A11A11A11A0F /* Debug */,
+				A11A11A11A11A11A11A11A10 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A11A11A11A11A11A11A11A0E /* Build configuration list for PBXNativeTarget "LiveWallpaper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A11A11A11A11A11A11A11A11 /* Debug */,
+				A11A11A11A11A11A11A11A12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A11A11A11A11A11A11A11A01 /* Project object */;
+}
