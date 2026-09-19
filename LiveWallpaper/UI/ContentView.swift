@@ -1,129 +1,151 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct ContentView: View {
     @EnvironmentObject private var store: SettingsStore
+    @Environment(\.openSettings) private var openSettings
     @State private var isDropTargeted = false
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(alignment: .leading, spacing: 18) {
             header
-            dropZone
-            if store.videoURL != nil {
-                playbackRow
-            }
+            dropController
+            playbackControls
             if let error = store.videoAccessError {
                 Text(error)
                     .font(.callout)
                     .foregroundStyle(.red)
-                    .multilineTextAlignment(.center)
             }
-            hint
+            Text("Drop a short MP4 or MOV here. WallFlow loops it behind your desktop icons.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        .padding(28)
-        .frame(minWidth: 480, minHeight: 400)
-        .onDrop(of: [.fileURL], isTargeted: $isDropTargeted, perform: handleDrop)
+        .padding(24)
+        .frame(minWidth: 520, minHeight: 520)
     }
 
     private var header: some View {
-        VStack(spacing: 6) {
-            Image(systemName: "sparkles.tv")
-                .font(.system(size: 36))
-                .foregroundStyle(.tint)
-            Text("Live Wallpaper")
-                .font(.title2.weight(.semibold))
-            Text("Loop a short video behind your desktop icons.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    private var dropZone: some View {
-        VStack(spacing: 12) {
-            Image(systemName: store.videoURL == nil ? "film" : "checkmark.circle.fill")
-                .font(.system(size: 28))
-                .foregroundStyle(store.videoURL == nil ? .secondary : Color.accentColor)
-            if let name = store.videoURL?.lastPathComponent ?? optionalName {
-                Text(name)
-                    .font(.headline)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.center)
-                if let duration = store.videoDuration {
-                    Text(durationLabel(duration))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            } else {
-                Text("Drop an MP4 or MOV here")
-                    .font(.headline)
-                Text("or choose a file")
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("WallFlow")
+                    .font(.title2.weight(.semibold))
+                Text("Wallpaper controller")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
-
-            HStack(spacing: 10) {
-                Button("Choose Video…") {
-                    store.chooseVideo()
-                }
-                .keyboardShortcut("o", modifiers: .command)
-                if store.videoURL != nil {
-                    Button("Remove") {
-                        store.clearVideo()
-                    }
-                }
+            Spacer()
+            Button {
+                openSettings()
+            } label: {
+                Image(systemName: "gearshape")
             }
-            .controlSize(.large)
+            .help("Settings")
         }
-        .frame(maxWidth: .infinity, minHeight: 180)
-        .padding(24)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(.quaternary.opacity(isDropTargeted ? 0.9 : 0.45))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .strokeBorder(
-                    isDropTargeted ? Color.accentColor : Color.secondary.opacity(0.25),
-                    style: StrokeStyle(lineWidth: 1.5, dash: isDropTargeted ? [] : [6, 4])
-                )
-        )
     }
 
-    private var playbackRow: some View {
-        HStack {
-            Button {
-                store.toggleManualPlayback()
-            } label: {
-                Label(
-                    store.isManuallyPaused ? "Play Wallpaper" : "Pause Wallpaper",
-                    systemImage: store.isManuallyPaused ? "play.fill" : "pause.fill"
+    private var dropController: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(.black.opacity(0.88))
+
+            if let url = store.videoURL {
+                WallpaperPreviewView(
+                    url: url,
+                    fill: store.scaleToFill,
+                    isPlaying: store.shouldEnginePlay
                 )
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             }
-            .buttonStyle(.borderedProminent)
+
+            VideoDropCatcher(isTargeted: $isDropTargeted) { url in
+                store.setVideo(url: url)
+            }
+
+            VStack(spacing: 10) {
+                if store.videoURL == nil {
+                    Image(systemName: "arrow.down.app")
+                        .font(.system(size: 32, weight: .medium))
+                    Text("Drag a video here")
+                        .font(.headline)
+                    Text("MP4, MOV, or M4V")
+                        .font(.subheadline)
+                        .foregroundStyle(.white.opacity(0.7))
+                } else {
+                    Spacer()
+                    HStack {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(store.videoDisplayName)
+                                .font(.headline)
+                                .lineLimit(1)
+                            Text(previewCaption)
+                                .font(.caption)
+                                .foregroundStyle(.white.opacity(0.75))
+                        }
+                        Spacer()
+                    }
+                    .padding(14)
+                    .background(.black.opacity(0.45), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                }
+            }
+            .foregroundStyle(.white)
+            .padding(20)
+            .allowsHitTesting(false)
+        }
+        .frame(maxWidth: .infinity, minHeight: 280)
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .strokeBorder(
+                    isDropTargeted ? Color.accentColor : Color.white.opacity(0.18),
+                    style: StrokeStyle(lineWidth: isDropTargeted ? 3 : 1, dash: isDropTargeted ? [] : [7, 5])
+                )
+        )
+        .scaleEffect(isDropTargeted ? 1.015 : 1)
+        .animation(.easeOut(duration: 0.15), value: isDropTargeted)
+    }
+
+    private var playbackControls: some View {
+        HStack(spacing: 10) {
+            if store.videoURL != nil {
+                Button {
+                    store.toggleManualPlayback()
+                } label: {
+                    Label(
+                        store.isManuallyPaused ? "Play on Desktop" : "Pause Desktop",
+                        systemImage: store.isManuallyPaused ? "play.fill" : "pause.fill"
+                    )
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+            }
+
+            Button("Choose Video…") {
+                store.chooseVideo()
+            }
+            .keyboardShortcut("o", modifiers: .command)
             .controlSize(.large)
+
+            if store.videoURL != nil {
+                Button("Remove") {
+                    store.clearVideo()
+                }
+                .controlSize(.large)
+            }
 
             Spacer()
 
-            statusCaption
+            if store.videoURL != nil {
+                Text(statusText)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.trailing)
+            }
         }
     }
 
-    private var statusCaption: some View {
-        Text(statusText)
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.trailing)
-    }
-
-    private var hint: some View {
-        Text("Best results: 5–15 second muted H.264 or HEVC clips whose first and last frames match.")
-            .font(.caption)
-            .foregroundStyle(.tertiary)
-            .multilineTextAlignment(.center)
-    }
-
-    private var optionalName: String? {
-        store.videoDisplayName.isEmpty ? nil : store.videoDisplayName
+    private var previewCaption: String {
+        if let duration = store.videoDuration {
+            return "\(Int(duration.rounded()))s clip · preview of your desktop wallpaper"
+        }
+        return "Preview of your desktop wallpaper"
     }
 
     private var statusText: String {
@@ -143,30 +165,6 @@ struct ContentView: View {
             return "Paused"
         }
         return store.shouldEnginePlay ? "Playing on the desktop" : "Paused"
-    }
-
-    private func durationLabel(_ seconds: TimeInterval) -> String {
-        let rounded = Int(seconds.rounded())
-        return "\(rounded)s clip"
-    }
-
-    private func handleDrop(_ providers: [NSItemProvider]) -> Bool {
-        guard let provider = providers.first else { return false }
-        provider.loadItem(forTypeIdentifier: UTType.fileURL.identifier, options: nil) { item, _ in
-            let url: URL?
-            if let data = item as? Data {
-                url = URL(dataRepresentation: data, relativeTo: nil)
-            } else if let dropped = item as? URL {
-                url = dropped
-            } else {
-                url = nil
-            }
-            guard let url else { return }
-            Task { @MainActor in
-                store.setVideo(url: url)
-            }
-        }
-        return true
     }
 }
 

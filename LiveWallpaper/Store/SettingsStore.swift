@@ -124,6 +124,7 @@ final class SettingsStore: ObservableObject {
             defaults.set(url.lastPathComponent, forKey: Keys.displayName)
             videoDisplayName = url.lastPathComponent
             videoAccessError = nil
+            isManuallyPaused = false
             try activateVideo(from: bookmark)
             DesktopWindowManager.shared.loadCurrentVideo()
         } catch {

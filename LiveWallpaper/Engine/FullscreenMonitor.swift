@@ -92,7 +92,6 @@ final class FullscreenMonitor {
         }
 
         let ourPID = ProcessInfo.processInfo.processIdentifier
-        let desktopLayer = Int(CGWindowLevelForKey(.desktopIconWindow))
         let statusLayer = Int(CGWindowLevelForKey(.statusWindow))
         var covered = Set<CGDirectDisplayID>()
 
@@ -102,10 +101,10 @@ final class FullscreenMonitor {
                 if let ownerPID = info[kCGWindowOwnerPID as String] as? pid_t, ownerPID == ourPID {
                     continue
                 }
+                // Normal app windows are layer 0; skip menu bar / status overlays.
                 guard let layer = info[kCGWindowLayer as String] as? Int,
                       layer >= 0,
-                      layer < statusLayer,
-                      layer > desktopLayer
+                      layer < statusLayer
                 else {
                     continue
                 }

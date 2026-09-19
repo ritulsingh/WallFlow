@@ -28,7 +28,7 @@ struct StatusMenuView: View {
 
         Divider()
 
-        Button("Open Live Wallpaper") {
+        Button("Open WallFlow") {
             openWindow(id: "main")
             NSApp.activate(ignoringOtherApps: true)
         }
@@ -40,7 +40,7 @@ struct StatusMenuView: View {
 
         Divider()
 
-        Button("Quit Live Wallpaper") {
+        Button("Quit WallFlow") {
             NSApp.terminate(nil)
         }
         .keyboardShortcut("q")

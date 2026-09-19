@@ -6,7 +6,7 @@ struct LiveWallpaperApp: App {
     @StateObject private var store = SettingsStore.shared
 
     var body: some Scene {
-        Window("Live Wallpaper", id: "main") {
+        Window("WallFlow", id: "main") {
             ContentView()
                 .environmentObject(store)
         }
