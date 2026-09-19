@@ -10,8 +10,9 @@ struct LiveWallpaperApp: App {
             ContentView()
                 .environmentObject(store)
         }
-        .defaultSize(width: 520, height: 460)
-        .windowResizability(.contentSize)
+        .defaultSize(width: 1080, height: 700)
+        .windowStyle(.hiddenTitleBar)
+        .windowToolbarStyle(.unified(showsTitle: false))
 
         MenuBarExtra {
             StatusMenuView()
@@ -23,6 +24,7 @@ struct LiveWallpaperApp: App {
         Settings {
             SettingsView()
                 .environmentObject(store)
+                .frame(width: 420)
         }
     }
 }

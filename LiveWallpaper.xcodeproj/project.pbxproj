@@ -21,6 +21,8 @@
 		A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2B /* SettingsView.swift */; };
 		A11A11A11A11A11A11A11A4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2C /* Assets.xcassets */; };
 		A11A11A11A11A11A11A11A4D /* VideoDropCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */; };
+		A11A11A11A11A11A11A11A4F /* WallpaperLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A31 /* WallpaperLibrary.swift */; };
+		A11A11A11A11A11A11A11A50 /* WallpaperInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A32 /* WallpaperInspectorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,8 @@
 		A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuView.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDropCatcher.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A31 /* WallpaperLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperLibrary.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A32 /* WallpaperInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperInspectorView.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2D /* LiveWallpaper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveWallpaper.entitlements; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -102,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				A11A11A11A11A11A11A11A28 /* SettingsStore.swift */,
+				A11A11A11A11A11A11A11A31 /* WallpaperLibrary.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -113,6 +118,7 @@
 				A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */,
 				A11A11A11A11A11A11A11A2B /* SettingsView.swift */,
 				A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */,
+				A11A11A11A11A11A11A11A32 /* WallpaperInspectorView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -194,6 +200,8 @@
 				A11A11A11A11A11A11A11A4A /* StatusMenuView.swift in Sources */,
 				A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */,
 				A11A11A11A11A11A11A11A4D /* VideoDropCatcher.swift in Sources */,
+				A11A11A11A11A11A11A11A4F /* WallpaperLibrary.swift in Sources */,
+				A11A11A11A11A11A11A11A50 /* WallpaperInspectorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

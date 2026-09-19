@@ -39,8 +39,8 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
-        .padding(8)
         .frame(width: 420)
+        .navigationTitle("Settings")
         .onAppear {
             store.syncLaunchAtLoginFromSystem()
         }

@@ -64,11 +64,24 @@ final class VideoDropView: NSView {
         onTargetedChange?(false)
     }
 
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard super.hitTest(point) != nil else { return nil }
+        if let event = NSApp.currentEvent {
+            switch event.type {
+            case .leftMouseDown, .leftMouseUp, .rightMouseDown, .rightMouseUp, .scrollWheel:
+                return nil
+            default:
+                break
+            }
+        }
+        return self
+    }
+
     private func firstSupportedVideo(from sender: NSDraggingInfo) -> URL? {
         let urls = sender.draggingPasteboard.readObjects(
             forClasses: [NSURL.self],
             options: [.urlReadingFileURLsOnly: true]
         ) as? [URL] ?? []
-        return urls.first { SettingsStore.isSupportedVideo($0) }
+        return urls.first { WallpaperLibrary.isSupportedVideo($0) }
     }
 }

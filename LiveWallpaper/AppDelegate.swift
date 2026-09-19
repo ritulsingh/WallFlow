@@ -27,6 +27,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func application(_ application: NSApplication, open urls: [URL]) {
         guard let url = urls.first else { return }
-        SettingsStore.shared.setVideo(url: url)
+        SettingsStore.shared.importDropped(url: url)
     }
 }

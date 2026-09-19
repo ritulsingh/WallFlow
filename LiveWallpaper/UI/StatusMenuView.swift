@@ -6,7 +6,7 @@ struct StatusMenuView: View {
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
-        Text(store.videoDisplayName.isEmpty ? "No wallpaper selected" : store.videoDisplayName)
+        Text(store.currentItem?.prettyName ?? "No Wallpaper")
 
         Divider()
 
@@ -16,7 +16,9 @@ struct StatusMenuView: View {
         .disabled(store.videoURL == nil)
         .keyboardShortcut("p")
 
-        Button("Choose Video…") {
+        Button("Import Video…") {
+            openWindow(id: "main")
+            NSApp.activate(ignoringOtherApps: true)
             store.chooseVideo()
         }
 

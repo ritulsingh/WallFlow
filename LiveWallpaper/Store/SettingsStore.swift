@@ -1,5 +1,4 @@
 import AppKit
-import AVFoundation
 import Foundation
 import ServiceManagement
 import UniformTypeIdentifiers
@@ -9,18 +8,24 @@ final class SettingsStore: ObservableObject {
     static let shared = SettingsStore()
 
     static let allowedVideoTypes: [UTType] = {
-        var types: [UTType] = [.mpeg4Movie, .quickTimeMovie]
+        var types: [UTType] = [.mpeg4Movie, .quickTimeMovie, .movie]
         if let m4v = UTType(filenameExtension: "m4v") {
             types.append(m4v)
         }
         return types
     }()
 
+    @Published var library: [WallpaperItem] = []
+    @Published var selectedID: WallpaperItem.ID?
+    @Published var currentID: WallpaperItem.ID?
     @Published var videoURL: URL?
     @Published var videoDisplayName = ""
     @Published var videoAccessError: String?
     @Published var videoDuration: TimeInterval?
     @Published var previewImage: NSImage?
+    @Published var searchText = ""
+    @Published var isShowingImporter = false
+    @Published var isImporting = false
 
     @Published var isMuted: Bool {
         didSet { persist(isMuted, key: Keys.isMuted) }
@@ -59,6 +64,21 @@ final class SettingsStore: ObservableObject {
     @Published var isScreenLocked = false
     @Published var isDisplayAsleep = false
 
+    var selectedItem: WallpaperItem? {
+        library.first { $0.id == selectedID }
+    }
+
+    var currentItem: WallpaperItem? {
+        library.first { $0.id == currentID }
+    }
+
+    var filteredLibrary: [WallpaperItem] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        let items = library.sorted { $0.addedAt > $1.addedAt }
+        guard !query.isEmpty else { return items }
+        return items.filter { $0.displayName.localizedCaseInsensitiveContains(query) }
+    }
+
     var shouldEnginePlay: Bool {
         guard videoURL != nil else { return false }
         if isManuallyPaused { return false }
@@ -75,12 +95,10 @@ final class SettingsStore: ObservableObject {
     }
 
     private let defaults = UserDefaults.standard
-    private var isAccessingVideo = false
     private var isReady = false
 
     private enum Keys {
-        static let bookmark = "videoBookmark"
-        static let displayName = "videoDisplayName"
+        static let currentID = "currentWallpaperID"
         static let isMuted = "isMuted"
         static let scaleToFill = "scaleToFill"
         static let isManuallyPaused = "isManuallyPaused"
@@ -96,63 +114,93 @@ final class SettingsStore: ObservableObject {
         pauseOnBattery = defaults.object(forKey: Keys.pauseOnBattery) as? Bool ?? true
         pauseOnLowPowerMode = defaults.object(forKey: Keys.pauseOnLowPowerMode) as? Bool ?? true
         pauseWhenFullscreen = defaults.object(forKey: Keys.pauseWhenFullscreen) as? Bool ?? true
-        videoDisplayName = defaults.string(forKey: Keys.displayName) ?? ""
         launchAtLogin = SMAppService.mainApp.status == .enabled
+        library = WallpaperLibrary.load()
+        if let stored = defaults.string(forKey: Keys.currentID), let id = UUID(uuidString: stored) {
+            currentID = id
+            selectedID = id
+        } else {
+            selectedID = library.first?.id
+        }
         isReady = true
     }
 
-    func setVideo(url: URL) {
-        guard Self.isSupportedVideo(url) else {
+    func restorePersistedVideo() {
+        library = WallpaperLibrary.load()
+        if let currentID, let item = library.first(where: { $0.id == currentID }) {
+            apply(item, userSelected: false)
+            return
+        }
+        currentID = nil
+        videoURL = nil
+    }
+
+    func chooseVideo() {
+        isShowingImporter = true
+    }
+
+    func importDropped(url: URL) {
+        importVideos(from: [url])
+    }
+
+    func importVideos(from result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            importVideos(from: urls)
+        case .failure(let error):
+            videoAccessError = error.localizedDescription
+        }
+    }
+
+    func importVideos(from urls: [URL]) {
+        let supported = urls.filter { Self.isSupportedVideo($0) }
+        guard !supported.isEmpty else {
             videoAccessError = "Choose an MP4, MOV, or M4V file."
             return
         }
 
-        let scoped = url.startAccessingSecurityScopedResource()
-        defer {
-            if scoped {
-                url.stopAccessingSecurityScopedResource()
-            }
-        }
+        isImporting = true
+        videoAccessError = nil
 
-        do {
-            let bookmark = try url.bookmarkData(
-                options: .withSecurityScope,
-                includingResourceValuesForKeys: nil,
-                relativeTo: nil
-            )
-            stopAccessingVideo()
-            defaults.set(bookmark, forKey: Keys.bookmark)
-            defaults.set(url.lastPathComponent, forKey: Keys.displayName)
-            videoDisplayName = url.lastPathComponent
-            videoAccessError = nil
-            isManuallyPaused = false
-            try activateVideo(from: bookmark)
-            DesktopWindowManager.shared.loadCurrentVideo()
-        } catch {
-            videoAccessError = error.localizedDescription
-            videoURL = nil
-            videoDuration = nil
-            previewImage = nil
+        Task.detached(priority: .userInitiated) {
+            var imported: [WallpaperItem] = []
+            var lastError: String?
+            for url in supported {
+                do {
+                    imported.append(try WallpaperLibrary.importVideo(from: url))
+                } catch {
+                    lastError = error.localizedDescription
+                }
+            }
+
+            let importedCopy = imported
+            let lastErrorCopy = lastError
+            await MainActor.run {
+                SettingsStore.shared.finishImport(importedCopy, error: lastErrorCopy)
+            }
         }
     }
 
-    func restorePersistedVideo() {
-        guard let bookmark = defaults.data(forKey: Keys.bookmark) else { return }
-        do {
-            try activateVideo(from: bookmark)
-        } catch {
-            videoAccessError = "Saved video is no longer available. Choose it again."
-            videoURL = nil
-            videoDuration = nil
-            previewImage = nil
-            defaults.removeObject(forKey: Keys.bookmark)
+    func setCurrent(_ item: WallpaperItem) {
+        selectedID = item.id
+        apply(item, userSelected: true)
+    }
+
+    func removeFromLibrary(_ item: WallpaperItem) {
+        if currentID == item.id {
+            clearVideo()
+        }
+        WallpaperLibrary.delete(item)
+        library.removeAll { $0.id == item.id }
+        WallpaperLibrary.save(library)
+        if selectedID == item.id {
+            selectedID = currentID ?? library.first?.id
         }
     }
 
     func clearVideo() {
-        stopAccessingVideo()
-        defaults.removeObject(forKey: Keys.bookmark)
-        defaults.removeObject(forKey: Keys.displayName)
+        currentID = nil
+        defaults.removeObject(forKey: Keys.currentID)
         videoURL = nil
         videoDisplayName = ""
         videoAccessError = nil
@@ -166,18 +214,7 @@ final class SettingsStore: ObservableObject {
         DesktopWindowManager.shared.applyPlaybackState()
     }
 
-    func chooseVideo() {
-        VideoPicker.present()
-    }
-
-    func stopAccessingVideo() {
-        guard isAccessingVideo, let videoURL else {
-            isAccessingVideo = false
-            return
-        }
-        videoURL.stopAccessingSecurityScopedResource()
-        isAccessingVideo = false
-    }
+    func stopAccessingVideo() {}
 
     func syncLaunchAtLoginFromSystem() {
         let enabled = SMAppService.mainApp.status == .enabled
@@ -189,68 +226,41 @@ final class SettingsStore: ObservableObject {
     }
 
     static func isSupportedVideo(_ url: URL) -> Bool {
-        let ext = url.pathExtension.lowercased()
-        return ["mp4", "mov", "m4v"].contains(ext)
+        WallpaperLibrary.isSupportedVideo(url)
     }
 
-    private func activateVideo(from bookmark: Data) throws {
-        var isStale = false
-        let resolved = try URL(
-            resolvingBookmarkData: bookmark,
-            options: [.withSecurityScope],
-            relativeTo: nil,
-            bookmarkDataIsStale: &isStale
-        )
-
-        guard resolved.startAccessingSecurityScopedResource() else {
-            throw CocoaError(.fileReadNoPermission)
-        }
-
-        isAccessingVideo = true
-        if isStale, let fresh = try? resolved.bookmarkData(
-            options: .withSecurityScope,
-            includingResourceValuesForKeys: nil,
-            relativeTo: nil
-        ) {
-            defaults.set(fresh, forKey: Keys.bookmark)
-        }
-
-        videoURL = resolved
-        videoDisplayName = resolved.lastPathComponent
-        defaults.set(resolved.lastPathComponent, forKey: Keys.displayName)
-        loadDuration(for: resolved)
-        loadPreview(for: resolved)
-    }
-
-    private func loadDuration(for url: URL) {
-        Task {
-            let asset = AVURLAsset(url: url)
-            guard let duration = try? await asset.load(.duration) else { return }
-            let seconds = duration.seconds
-            guard seconds.isFinite else { return }
-            self.videoDuration = seconds
-        }
-    }
-
-    private func loadPreview(for url: URL) {
-        previewImage = nil
-        Task {
-            let asset = AVURLAsset(url: url)
-            let generator = AVAssetImageGenerator(asset: asset)
-            generator.appliesPreferredTrackTransform = true
-            generator.maximumSize = CGSize(width: 1600, height: 900)
-            generator.requestedTimeToleranceBefore = .positiveInfinity
-            generator.requestedTimeToleranceAfter = .positiveInfinity
-            do {
-                let (cgImage, _) = try await generator.image(at: .zero)
-                self.previewImage = NSImage(
-                    cgImage: cgImage,
-                    size: NSSize(width: cgImage.width, height: cgImage.height)
-                )
-            } catch {
-                self.previewImage = nil
+    private func finishImport(_ imported: [WallpaperItem], error: String?) {
+        isImporting = false
+        if !imported.isEmpty {
+            library.insert(contentsOf: imported, at: 0)
+            WallpaperLibrary.save(library)
+            if let latest = imported.last {
+                setCurrent(latest)
             }
         }
+        if imported.isEmpty {
+            videoAccessError = error ?? "WallFlow couldn’t import that video."
+        }
+    }
+
+    private func apply(_ item: WallpaperItem, userSelected: Bool) {
+        guard FileManager.default.fileExists(atPath: item.videoURL.path) else {
+            videoAccessError = "This clip is missing. Import it again."
+            return
+        }
+
+        currentID = item.id
+        selectedID = item.id
+        defaults.set(item.id.uuidString, forKey: Keys.currentID)
+        videoURL = item.videoURL
+        videoDisplayName = item.displayName
+        videoDuration = item.duration
+        previewImage = item.thumbnailImage
+        videoAccessError = nil
+        if userSelected {
+            isManuallyPaused = false
+        }
+        DesktopWindowManager.shared.loadCurrentVideo()
     }
 
     private func persist(_ value: Bool, key: String) {
@@ -274,23 +284,6 @@ final class SettingsStore: ObservableObject {
             isReady = false
             launchAtLogin = SMAppService.mainApp.status == .enabled
             isReady = true
-        }
-    }
-}
-
-enum VideoPicker {
-    @MainActor
-    static func present() {
-        let panel = NSOpenPanel()
-        panel.title = "Choose a Live Wallpaper"
-        panel.prompt = "Use as Wallpaper"
-        panel.message = "Short muted clips (5–15 seconds, MP4/MOV) loop like the iPhone Lock Screen."
-        panel.allowedContentTypes = SettingsStore.allowedVideoTypes
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
-        panel.canChooseFiles = true
-        if panel.runModal() == .OK, let url = panel.url {
-            SettingsStore.shared.setVideo(url: url)
         }
     }
 }
