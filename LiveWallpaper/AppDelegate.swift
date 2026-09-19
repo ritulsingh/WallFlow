@@ -7,11 +7,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         SettingsStore.shared.syncLaunchAtLoginFromSystem()
         PowerMonitor.shared.start()
         FullscreenMonitor.shared.start()
+        AppActivityMonitor.shared.start()
         DesktopWindowManager.shared.start()
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        SettingsStore.shared.isAppActive = true
+        DesktopWindowManager.shared.applyPlaybackState()
+    }
+
+    func applicationDidResignActive(_ notification: Notification) {
+        SettingsStore.shared.stopPreview()
+        SettingsStore.shared.isAppActive = false
+        DesktopWindowManager.shared.applyPlaybackState()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
         DesktopWindowManager.shared.stop()
+        AppActivityMonitor.shared.stop()
         FullscreenMonitor.shared.stop()
         PowerMonitor.shared.stop()
         SettingsStore.shared.stopAccessingVideo()

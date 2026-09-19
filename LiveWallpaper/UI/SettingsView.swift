@@ -24,7 +24,8 @@ struct SettingsView: View {
                 }
                 Toggle("Pause in Low Power Mode", isOn: $store.pauseOnLowPowerMode)
                 Toggle("Pause when an app is fullscreen", isOn: $store.pauseWhenFullscreen)
-                Text("Playback also pauses when the Mac is locked, the displays sleep, or you browse another clip in the library.")
+                Toggle("Pause while using other apps", isOn: $store.pauseWhenUsingOtherApps)
+                Text("The wallpaper plays when you can see the desktop, and pauses while you work in another app. It also pauses when the Mac is locked, the displays sleep, or you browse another clip.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

@@ -77,6 +77,7 @@ final class VideoLoopController {
     func pause() {
         wantsPlayback = false
         player?.pause()
+        player?.rate = 0
     }
 
     func layout() {

@@ -64,6 +64,10 @@ final class SettingsStore: ObservableObject {
         didSet { persist(pauseWhenFullscreen, key: Keys.pauseWhenFullscreen) }
     }
 
+    @Published var pauseWhenUsingOtherApps: Bool {
+        didSet { persist(pauseWhenUsingOtherApps, key: Keys.pauseWhenUsingOtherApps) }
+    }
+
     @Published var launchAtLogin: Bool {
         didSet {
             guard isReady else { return }
@@ -76,6 +80,7 @@ final class SettingsStore: ObservableObject {
     @Published var isLowPowerMode = false
     @Published var isScreenLocked = false
     @Published var isDisplayAsleep = false
+    @Published var isWorkingInOtherApp = false
 
     var selectedItem: WallpaperItem? {
         library.first { $0.id == selectedID }
@@ -105,6 +110,7 @@ final class SettingsStore: ObservableObject {
         if pauseOnBattery && isOnBattery { return false }
         if isPreviewing { return false }
         if isAppActive && isBrowsingOtherVideo { return false }
+        if pauseWhenUsingOtherApps && isWorkingInOtherApp { return false }
         return true
     }
 
@@ -125,6 +131,7 @@ final class SettingsStore: ObservableObject {
         static let pauseOnBattery = "pauseOnBatteryV2"
         static let pauseOnLowPowerMode = "pauseOnLowPowerMode"
         static let pauseWhenFullscreen = "pauseWhenFullscreen"
+        static let pauseWhenUsingOtherApps = "pauseWhenUsingOtherApps"
     }
 
     private init() {
@@ -134,6 +141,7 @@ final class SettingsStore: ObservableObject {
         pauseOnBattery = defaults.object(forKey: Keys.pauseOnBattery) as? Bool ?? false
         pauseOnLowPowerMode = defaults.object(forKey: Keys.pauseOnLowPowerMode) as? Bool ?? true
         pauseWhenFullscreen = defaults.object(forKey: Keys.pauseWhenFullscreen) as? Bool ?? true
+        pauseWhenUsingOtherApps = defaults.object(forKey: Keys.pauseWhenUsingOtherApps) as? Bool ?? true
         launchAtLogin = SMAppService.mainApp.status == .enabled
         library = WallpaperLibrary.load()
         if let stored = defaults.string(forKey: Keys.currentID), let id = UUID(uuidString: stored) {

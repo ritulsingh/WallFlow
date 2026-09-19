@@ -14,6 +14,7 @@
 		A11A11A11A11A11A11A11A44 /* VideoLoopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */; };
 		A11A11A11A11A11A11A11A45 /* PowerMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */; };
 		A11A11A11A11A11A11A11A46 /* FullscreenMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */; };
+		A11A11A11A11A11A11A11A53 /* AppActivityMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A35 /* AppActivityMonitor.swift */; };
 		A11A11A11A11A11A11A11A47 /* NSScreen+DisplayID.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */; };
 		A11A11A11A11A11A11A11A48 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A28 /* SettingsStore.swift */; };
 		A11A11A11A11A11A11A11A49 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A29 /* ContentView.swift */; };
@@ -35,6 +36,7 @@
 		A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoopController.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerMonitor.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenMonitor.swift; sourceTree = "<group>"; };
+		A11A11A11A11A11A11A11A35 /* AppActivityMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActivityMonitor.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+DisplayID.swift"; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A28 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */,
 				A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */,
 				A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */,
+				A11A11A11A11A11A11A11A35 /* AppActivityMonitor.swift */,
 				A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */,
 			);
 			path = Engine;
@@ -197,6 +200,7 @@
 				A11A11A11A11A11A11A11A44 /* VideoLoopController.swift in Sources */,
 				A11A11A11A11A11A11A11A45 /* PowerMonitor.swift in Sources */,
 				A11A11A11A11A11A11A11A46 /* FullscreenMonitor.swift in Sources */,
+				A11A11A11A11A11A11A11A53 /* AppActivityMonitor.swift in Sources */,
 				A11A11A11A11A11A11A11A47 /* NSScreen+DisplayID.swift in Sources */,
 				A11A11A11A11A11A11A11A48 /* SettingsStore.swift in Sources */,
 				A11A11A11A11A11A11A11A49 /* ContentView.swift in Sources */,
