@@ -92,7 +92,6 @@ final class FullscreenMonitor {
         }
 
         let ourPID = ProcessInfo.processInfo.processIdentifier
-        let statusLayer = Int(CGWindowLevelForKey(.statusWindow))
         var covered = Set<CGDirectDisplayID>()
 
         for screen in NSScreen.screens {
@@ -102,10 +101,10 @@ final class FullscreenMonitor {
                     continue
                 }
                 // Normal app windows are layer 0; skip menu bar / status overlays.
-                guard let layer = info[kCGWindowLayer as String] as? Int,
-                      layer >= 0,
-                      layer < statusLayer
-                else {
+                guard let layer = info[kCGWindowLayer as String] as? Int, layer == 0 else {
+                    continue
+                }
+                if let alpha = info[kCGWindowAlpha as String] as? CGFloat, alpha < 0.99 {
                     continue
                 }
                 guard let bounds = info[kCGWindowBounds as String] as? [String: CGFloat] else {

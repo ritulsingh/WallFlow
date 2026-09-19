@@ -16,7 +16,7 @@ struct SettingsView: View {
             }
 
             Section("Pause automatically") {
-                Toggle("Pause on battery", isOn: $store.pauseOnBattery)
+                Toggle("Pause on battery to save power", isOn: $store.pauseOnBattery)
                 if store.isOnBattery {
                     Text("Currently running on battery.")
                         .font(.caption)
@@ -24,7 +24,7 @@ struct SettingsView: View {
                 }
                 Toggle("Pause in Low Power Mode", isOn: $store.pauseOnLowPowerMode)
                 Toggle("Pause when an app is fullscreen", isOn: $store.pauseWhenFullscreen)
-                Text("Playback also pauses when the Mac is locked or the displays sleep.")
+                Text("Playback also pauses when the Mac is locked, the displays sleep, or you browse another clip in the library.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

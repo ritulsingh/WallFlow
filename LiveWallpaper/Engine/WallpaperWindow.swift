@@ -15,7 +15,8 @@ final class WallpaperWindow: NSWindow {
             defer: false
         )
 
-        level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopWindow)))
+        // Sit above the still desktop picture and below Finder icons.
+        level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) - 1)
         collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle]
         ignoresMouseEvents = true
         isOpaque = true
@@ -35,6 +36,8 @@ final class WallpaperWindow: NSWindow {
         videoController.attach(to: view)
 
         setFrame(screen.frame, display: true)
+        contentView?.frame = NSRect(origin: .zero, size: screen.frame.size)
+        videoController.layout()
         orderFrontRegardless()
     }
 

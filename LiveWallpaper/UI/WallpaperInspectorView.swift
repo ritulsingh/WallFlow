@@ -28,6 +28,17 @@ struct HeroDetailView: View {
                 .frame(width: size.width, height: size.height)
                 .clipped()
 
+            if store.isPreviewing && !isCurrent {
+                HeroPlayerView(
+                    url: item.videoURL,
+                    fill: store.scaleToFill,
+                    isPlaying: store.isAppActive
+                )
+                .frame(width: size.width, height: size.height)
+                .clipped()
+                .allowsHitTesting(false)
+            }
+
             LinearGradient(
                 colors: [
                     .black.opacity(0.22),
@@ -68,6 +79,12 @@ struct HeroDetailView: View {
                         .font(.subheadline.weight(.medium))
                         .monospacedDigit()
                         .foregroundStyle(.white.opacity(0.72))
+
+                    if !isCurrent, store.currentID != nil {
+                        Text("Desktop wallpaper paused while you browse")
+                            .font(.caption)
+                            .foregroundStyle(.white.opacity(0.55))
+                    }
 
                     if let error = store.videoAccessError {
                         Text(error)
@@ -113,6 +130,16 @@ struct HeroDetailView: View {
                 }
                 .buttonStyle(HUDButtonStyle(prominent: true))
             } else {
+                Button {
+                    store.togglePreview()
+                } label: {
+                    Label(
+                        store.isPreviewing ? "Stop Preview" : "Preview",
+                        systemImage: store.isPreviewing ? "stop.fill" : "play.fill"
+                    )
+                }
+                .buttonStyle(HUDButtonStyle(prominent: false))
+
                 Button {
                     store.setCurrent(item)
                 } label: {

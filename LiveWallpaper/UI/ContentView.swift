@@ -68,8 +68,19 @@ struct ContentView: View {
         }
     }
 
+    private var selectionBinding: Binding<WallpaperItem.ID?> {
+        Binding(
+            get: { store.selectedID },
+            set: { newValue in
+                Task { @MainActor in
+                    store.selectedID = newValue
+                }
+            }
+        )
+    }
+
     private var sidebar: some View {
-        List(selection: $store.selectedID) {
+            List(selection: selectionBinding) {
             Section(store.library.count == 1 ? "1 Video" : "\(store.library.count) Videos") {
                 ForEach(store.filteredLibrary) { item in
                     SidebarRow(item: item, isCurrent: store.currentID == item.id)

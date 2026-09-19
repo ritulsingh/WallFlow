@@ -6,7 +6,9 @@ final class VideoLoopController {
     private var player: AVQueuePlayer?
     private var looper: AVPlayerLooper?
     private var playerLayer: AVPlayerLayer?
+    private var statusObserver: NSKeyValueObservation?
     private weak var container: NSView?
+    private var wantsPlayback = false
 
     func attach(to view: NSView) {
         container = view
@@ -19,15 +21,17 @@ final class VideoLoopController {
         layer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
         view.layer?.addSublayer(layer)
         playerLayer = layer
+        layout()
     }
 
     func load(url: URL, muted: Bool, fill: Bool, maximumResolution: CGSize? = nil) {
+        statusObserver = nil
         looper = nil
         player?.pause()
         player = nil
 
         let item = AVPlayerItem(url: url)
-        item.preferredForwardBufferDuration = 1
+        item.preferredForwardBufferDuration = 0
         item.canUseNetworkResourcesForLiveStreamingWhilePaused = false
         if let maximumResolution, maximumResolution.width > 0, maximumResolution.height > 0 {
             item.preferredMaximumResolution = maximumResolution
@@ -46,6 +50,14 @@ final class VideoLoopController {
         playerLayer?.player = queue
         playerLayer?.videoGravity = fill ? .resizeAspectFill : .resizeAspect
         layout()
+
+        statusObserver = item.observe(\.status, options: [.initial, .new]) { [weak self] item, _ in
+            guard item.status == .readyToPlay else { return }
+            Task { @MainActor in
+                self?.layout()
+                self?.applyPlaybackIfNeeded()
+            }
+        }
     }
 
     func setMuted(_ muted: Bool) {
@@ -58,10 +70,12 @@ final class VideoLoopController {
     }
 
     func play() {
-        player?.play()
+        wantsPlayback = true
+        applyPlaybackIfNeeded()
     }
 
     func pause() {
+        wantsPlayback = false
         player?.pause()
     }
 
@@ -70,9 +84,16 @@ final class VideoLoopController {
     }
 
     func teardown() {
+        wantsPlayback = false
+        statusObserver = nil
         looper = nil
         player?.pause()
         player = nil
         playerLayer?.player = nil
+    }
+
+    private func applyPlaybackIfNeeded() {
+        guard wantsPlayback else { return }
+        player?.playImmediately(atRate: 1)
     }
 }

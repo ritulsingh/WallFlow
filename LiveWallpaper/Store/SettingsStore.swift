@@ -16,8 +16,21 @@ final class SettingsStore: ObservableObject {
     }()
 
     @Published var library: [WallpaperItem] = []
-    @Published var selectedID: WallpaperItem.ID?
+    @Published var selectedID: WallpaperItem.ID? {
+        didSet {
+            guard isReady, selectedID != oldValue else { return }
+            isPreviewing = false
+            scheduleEngineUpdate()
+        }
+    }
     @Published var currentID: WallpaperItem.ID?
+    @Published var isPreviewing = false {
+        didSet {
+            guard isReady, isPreviewing != oldValue else { return }
+            scheduleEngineUpdate()
+        }
+    }
+    @Published var isAppActive = true
     @Published var videoURL: URL?
     @Published var videoDisplayName = ""
     @Published var videoAccessError: String?
@@ -79,12 +92,19 @@ final class SettingsStore: ObservableObject {
         return items.filter { $0.displayName.localizedCaseInsensitiveContains(query) }
     }
 
+    var isBrowsingOtherVideo: Bool {
+        guard let selectedID, let currentID else { return false }
+        return selectedID != currentID
+    }
+
     var shouldEnginePlay: Bool {
         guard videoURL != nil else { return false }
         if isManuallyPaused { return false }
         if isScreenLocked || isDisplayAsleep { return false }
         if pauseOnLowPowerMode && isLowPowerMode { return false }
         if pauseOnBattery && isOnBattery { return false }
+        if isPreviewing { return false }
+        if isAppActive && isBrowsingOtherVideo { return false }
         return true
     }
 
@@ -102,7 +122,7 @@ final class SettingsStore: ObservableObject {
         static let isMuted = "isMuted"
         static let scaleToFill = "scaleToFill"
         static let isManuallyPaused = "isManuallyPaused"
-        static let pauseOnBattery = "pauseOnBattery"
+        static let pauseOnBattery = "pauseOnBatteryV2"
         static let pauseOnLowPowerMode = "pauseOnLowPowerMode"
         static let pauseWhenFullscreen = "pauseWhenFullscreen"
     }
@@ -111,7 +131,7 @@ final class SettingsStore: ObservableObject {
         isMuted = defaults.object(forKey: Keys.isMuted) as? Bool ?? true
         scaleToFill = defaults.object(forKey: Keys.scaleToFill) as? Bool ?? true
         isManuallyPaused = defaults.bool(forKey: Keys.isManuallyPaused)
-        pauseOnBattery = defaults.object(forKey: Keys.pauseOnBattery) as? Bool ?? true
+        pauseOnBattery = defaults.object(forKey: Keys.pauseOnBattery) as? Bool ?? false
         pauseOnLowPowerMode = defaults.object(forKey: Keys.pauseOnLowPowerMode) as? Bool ?? true
         pauseWhenFullscreen = defaults.object(forKey: Keys.pauseWhenFullscreen) as? Bool ?? true
         launchAtLogin = SMAppService.mainApp.status == .enabled
@@ -182,8 +202,19 @@ final class SettingsStore: ObservableObject {
     }
 
     func setCurrent(_ item: WallpaperItem) {
+        isPreviewing = false
         selectedID = item.id
         apply(item, userSelected: true)
+    }
+
+    func togglePreview() {
+        guard selectedItem != nil, selectedID != currentID else { return }
+        isPreviewing.toggle()
+    }
+
+    func stopPreview() {
+        guard isPreviewing else { return }
+        isPreviewing = false
     }
 
     func removeFromLibrary(_ item: WallpaperItem) {
@@ -199,6 +230,7 @@ final class SettingsStore: ObservableObject {
     }
 
     func clearVideo() {
+        isPreviewing = false
         currentID = nil
         defaults.removeObject(forKey: Keys.currentID)
         videoURL = nil
@@ -266,7 +298,13 @@ final class SettingsStore: ObservableObject {
     private func persist(_ value: Bool, key: String) {
         guard isReady else { return }
         defaults.set(value, forKey: key)
-        DesktopWindowManager.shared.handleSettingsChange()
+        scheduleEngineUpdate()
+    }
+
+    private func scheduleEngineUpdate() {
+        Task { @MainActor in
+            DesktopWindowManager.shared.handleSettingsChange()
+        }
     }
 
     private func applyLaunchAtLogin() {

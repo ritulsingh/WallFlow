@@ -45,10 +45,14 @@ final class PowerMonitor {
     }
 
     func refresh() {
-        let store = SettingsStore.shared
-        store.isOnBattery = Self.isRunningOnBattery()
-        store.isLowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
-        DesktopWindowManager.shared.applyPlaybackState()
+        let onBattery = Self.isRunningOnBattery()
+        let lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
+        Task { @MainActor in
+            let store = SettingsStore.shared
+            store.isOnBattery = onBattery
+            store.isLowPowerMode = lowPower
+            DesktopWindowManager.shared.applyPlaybackState()
+        }
     }
 
     private static func isRunningOnBattery() -> Bool {
