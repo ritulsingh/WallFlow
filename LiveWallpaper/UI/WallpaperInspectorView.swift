@@ -179,17 +179,26 @@ struct HeroDetailView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
-            Image(systemName: "sparkles.tv")
-                .font(.system(size: 40, weight: .regular))
-                .foregroundStyle(.white.opacity(0.9))
-                .symbolRenderingMode(.hierarchical)
-            Text("Add a Live Wallpaper")
-                .font(.title2.weight(.semibold))
+        VStack(spacing: 14) {
+            Image("Logo")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 108, height: 108)
+                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                        .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
+                )
+                .shadow(color: Color.cyan.opacity(0.22), radius: 28, y: 10)
+
+            Text("WallFlow")
+                .font(.system(size: 32, weight: .semibold))
                 .foregroundStyle(.white)
+
             Text("Import a short MP4 or MOV to get started.")
                 .font(.subheadline)
                 .foregroundStyle(.white.opacity(0.62))
+
             Button("Import Video…") {
                 store.chooseVideo()
             }

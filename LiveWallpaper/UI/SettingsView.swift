@@ -5,6 +5,23 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            Section {
+                HStack(spacing: 12) {
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 44, height: 44)
+                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("WallFlow")
+                            .font(.headline)
+                        Text("Live wallpaper for Mac")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
             Section("Playback") {
                 Toggle("Mute wallpaper", isOn: $store.isMuted)
                 Toggle("Scale to fill", isOn: $store.scaleToFill)

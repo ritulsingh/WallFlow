@@ -17,6 +17,17 @@ struct ContentView: View {
         .searchable(text: $store.searchText, placement: .sidebar, prompt: "Search")
         .frame(minWidth: 860, minHeight: 580)
         .toolbar {
+            ToolbarItem(placement: .navigation) {
+                HStack(spacing: 8) {
+                    Image("Logo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 22, height: 22)
+                        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
+                    Text("WallFlow")
+                        .font(.headline)
+                }
+            }
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {
                     store.chooseVideo()
