@@ -26,7 +26,7 @@ final class WallpaperWindow: NSWindow {
         isRestorable = false
         isExcludedFromWindowsMenu = true
         hidesOnDeactivate = false
-        title = "Live Wallpaper"
+        title = "WallFlow"
 
         let view = NSView(frame: NSRect(origin: .zero, size: screen.frame.size))
         view.wantsLayer = true

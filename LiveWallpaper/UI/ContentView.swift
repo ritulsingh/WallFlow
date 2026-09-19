@@ -47,13 +47,12 @@ struct ContentView: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(.black.opacity(0.88))
 
-            if let url = store.videoURL {
-                WallpaperPreviewView(
-                    url: url,
-                    fill: store.scaleToFill,
-                    isPlaying: store.shouldEnginePlay
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            if let image = store.previewImage {
+                Image(nsImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: store.scaleToFill ? .fill : .fit)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .clipped()
             }
 
             VideoDropCatcher(isTargeted: $isDropTargeted) { url in
@@ -91,6 +90,7 @@ struct ContentView: View {
             .allowsHitTesting(false)
         }
         .frame(maxWidth: .infinity, minHeight: 280)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .strokeBorder(
@@ -143,9 +143,9 @@ struct ContentView: View {
 
     private var previewCaption: String {
         if let duration = store.videoDuration {
-            return "\(Int(duration.rounded()))s clip · preview of your desktop wallpaper"
+            return "\(Int(duration.rounded()))s clip · showing on the desktop"
         }
-        return "Preview of your desktop wallpaper"
+        return "Showing on the desktop"
     }
 
     private var statusText: String {

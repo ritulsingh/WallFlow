@@ -20,16 +20,29 @@ Apple’s desktop picture API only accepts still images. WallFlow places a click
 - Xcode 16 or later (to build)
 - A short local video file
 
-## Getting started
+## Install (anyone)
+
+1. Download **WallFlow-macOS.zip** from the [latest GitHub Release](https://github.com/ritulsingh/WallFlow/releases/latest).
+2. Unzip it and drag **WallFlow** into **Applications**.
+3. Open WallFlow. If macOS says it can’t be verified, right-click the app → **Open** → **Open**.
+   This build is ad-hoc signed (not Apple-notarized), so that extra click is expected.
+
+Then drop a short MP4/MOV onto the WallFlow window. It loops behind your desktop icons.
+
+## Build from source
 
 1. Open `LiveWallpaper.xcodeproj` in Xcode.
 2. Select the **LiveWallpaper** scheme and run it on **My Mac**.
-3. In the WallFlow controller, drop an MP4/MOV onto the preview, or click **Choose Video…**. The clip starts on your desktop right away.
+3. Drop an MP4/MOV onto the controller, or click **Choose Video…**.
 
 The app stays running after you close the main window. Use the menu bar extra to play, pause, change the clip, open Settings, or quit.
 
 ```bash
+# Debug
 xcodebuild -project LiveWallpaper.xcodeproj -scheme LiveWallpaper -configuration Debug -destination 'platform=macOS' build
+
+# Optimized zip in dist/WallFlow-macOS.zip
+zsh scripts/package.sh
 ```
 
 ## Recommended clips

@@ -98,7 +98,8 @@ final class DesktopWindowManager {
                     existing.videoController.load(
                         url: videoURL,
                         muted: store.isMuted,
-                        fill: store.scaleToFill
+                        fill: store.scaleToFill,
+                        maximumResolution: screen.backingPixelSize
                     )
                 }
             } else {
@@ -106,7 +107,8 @@ final class DesktopWindowManager {
                 window.videoController.load(
                     url: videoURL,
                     muted: store.isMuted,
-                    fill: store.scaleToFill
+                    fill: store.scaleToFill,
+                    maximumResolution: screen.backingPixelSize
                 )
                 windows[id] = window
             }

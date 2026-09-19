@@ -21,11 +21,10 @@
 		A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2B /* SettingsView.swift */; };
 		A11A11A11A11A11A11A11A4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2C /* Assets.xcassets */; };
 		A11A11A11A11A11A11A11A4D /* VideoDropCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */; };
-		A11A11A11A11A11A11A11A4E /* WallpaperPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A30 /* WallpaperPreviewView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A11A11A11A11A11A11A11A06 /* LiveWallpaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveWallpaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A11A11A11A11A11A11A11A06 /* WallFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WallFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWallpaperApp.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopWindowManager.swift; sourceTree = "<group>"; };
@@ -39,7 +38,6 @@
 		A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuView.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDropCatcher.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A30 /* WallpaperPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperPreviewView.swift; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2D /* LiveWallpaper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveWallpaper.entitlements; sourceTree = "<group>"; };
 		A11A11A11A11A11A11A11A2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -67,7 +65,7 @@
 		A11A11A11A11A11A11A11A08 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A11A11A11A11A11A11A11A06 /* LiveWallpaper.app */,
+				A11A11A11A11A11A11A11A06 /* WallFlow.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -115,7 +113,6 @@
 				A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */,
 				A11A11A11A11A11A11A11A2B /* SettingsView.swift */,
 				A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */,
-				A11A11A11A11A11A11A11A30 /* WallpaperPreviewView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -137,7 +134,7 @@
 			);
 			name = LiveWallpaper;
 			productName = LiveWallpaper;
-			productReference = A11A11A11A11A11A11A11A06 /* LiveWallpaper.app */;
+			productReference = A11A11A11A11A11A11A11A06 /* WallFlow.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -197,7 +194,6 @@
 				A11A11A11A11A11A11A11A4A /* StatusMenuView.swift in Sources */,
 				A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */,
 				A11A11A11A11A11A11A11A4D /* VideoDropCatcher.swift in Sources */,
-				A11A11A11A11A11A11A11A4E /* WallpaperPreviewView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,6 +311,9 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				DEAD_CODE_STRIPPING = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -337,8 +336,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.LiveWallpaper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.WallFlow;
+				PRODUCT_NAME = WallFlow;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -363,8 +362,8 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.LiveWallpaper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.WallFlow;
+				PRODUCT_NAME = WallFlow;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};

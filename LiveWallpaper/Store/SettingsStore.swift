@@ -20,6 +20,7 @@ final class SettingsStore: ObservableObject {
     @Published var videoDisplayName = ""
     @Published var videoAccessError: String?
     @Published var videoDuration: TimeInterval?
+    @Published var previewImage: NSImage?
 
     @Published var isMuted: Bool {
         didSet { persist(isMuted, key: Keys.isMuted) }
@@ -131,6 +132,7 @@ final class SettingsStore: ObservableObject {
             videoAccessError = error.localizedDescription
             videoURL = nil
             videoDuration = nil
+            previewImage = nil
         }
     }
 
@@ -142,6 +144,7 @@ final class SettingsStore: ObservableObject {
             videoAccessError = "Saved video is no longer available. Choose it again."
             videoURL = nil
             videoDuration = nil
+            previewImage = nil
             defaults.removeObject(forKey: Keys.bookmark)
         }
     }
@@ -154,6 +157,7 @@ final class SettingsStore: ObservableObject {
         videoDisplayName = ""
         videoAccessError = nil
         videoDuration = nil
+        previewImage = nil
         DesktopWindowManager.shared.clearVideo()
     }
 
@@ -215,6 +219,7 @@ final class SettingsStore: ObservableObject {
         videoDisplayName = resolved.lastPathComponent
         defaults.set(resolved.lastPathComponent, forKey: Keys.displayName)
         loadDuration(for: resolved)
+        loadPreview(for: resolved)
     }
 
     private func loadDuration(for url: URL) {
@@ -224,6 +229,27 @@ final class SettingsStore: ObservableObject {
             let seconds = duration.seconds
             guard seconds.isFinite else { return }
             self.videoDuration = seconds
+        }
+    }
+
+    private func loadPreview(for url: URL) {
+        previewImage = nil
+        Task {
+            let asset = AVURLAsset(url: url)
+            let generator = AVAssetImageGenerator(asset: asset)
+            generator.appliesPreferredTrackTransform = true
+            generator.maximumSize = CGSize(width: 1600, height: 900)
+            generator.requestedTimeToleranceBefore = .positiveInfinity
+            generator.requestedTimeToleranceAfter = .positiveInfinity
+            do {
+                let (cgImage, _) = try await generator.image(at: .zero)
+                self.previewImage = NSImage(
+                    cgImage: cgImage,
+                    size: NSSize(width: cgImage.width, height: cgImage.height)
+                )
+            } catch {
+                self.previewImage = nil
+            }
         }
     }
 

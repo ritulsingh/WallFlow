@@ -18,4 +18,8 @@ extension NSScreen {
             height: frame.height
         )
     }
+
+    var backingPixelSize: CGSize {
+        CGSize(width: frame.width * backingScaleFactor, height: frame.height * backingScaleFactor)
+    }
 }

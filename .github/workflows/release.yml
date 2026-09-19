@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and package
+        run: zsh scripts/package.sh
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/WallFlow-macOS.zip
+          generate_release_notes: true
+          body: |
+            Download **WallFlow-macOS.zip**, unzip it, and drag **WallFlow** into Applications.
+
+            This build is not Apple-notarized. If macOS blocks it, right-click the app, choose **Open**, then **Open** again.

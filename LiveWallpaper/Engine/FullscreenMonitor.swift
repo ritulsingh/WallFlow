@@ -13,12 +13,12 @@ final class FullscreenMonitor {
 
     func start() {
         refreshFullscreen()
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { _ in
             Task { @MainActor in
                 FullscreenMonitor.shared.refreshFullscreen()
             }
         }
-        timer?.tolerance = 0.25
+        timer?.tolerance = 0.5
 
         let workspace = NSWorkspace.shared.notificationCenter
         observations.append(

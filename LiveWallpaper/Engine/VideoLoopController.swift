@@ -21,15 +21,24 @@ final class VideoLoopController {
         playerLayer = layer
     }
 
-    func load(url: URL, muted: Bool, fill: Bool) {
+    func load(url: URL, muted: Bool, fill: Bool, maximumResolution: CGSize? = nil) {
         looper = nil
         player?.pause()
         player = nil
 
         let item = AVPlayerItem(url: url)
+        item.preferredForwardBufferDuration = 1
+        item.canUseNetworkResourcesForLiveStreamingWhilePaused = false
+        if let maximumResolution, maximumResolution.width > 0, maximumResolution.height > 0 {
+            item.preferredMaximumResolution = maximumResolution
+        }
+
         let queue = AVQueuePlayer()
         queue.isMuted = muted
+        queue.volume = muted ? 0 : 1
         queue.automaticallyWaitsToMinimizeStalling = false
+        queue.allowsExternalPlayback = false
+        queue.preventsDisplaySleepDuringVideoPlayback = false
         queue.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
 
         looper = AVPlayerLooper(player: queue, templateItem: item)
@@ -41,6 +50,7 @@ final class VideoLoopController {
 
     func setMuted(_ muted: Bool) {
         player?.isMuted = muted
+        player?.volume = muted ? 0 : 1
     }
 
     func setFill(_ fill: Bool) {
