@@ -1,12 +1,12 @@
-# WallFlow
+# WallFlow: Live Wallpaper for Mac
 
 <p align="center">
-  <img src="LiveWallpaper/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width="128" height="128" alt="WallFlow icon">
+  <img src="LiveWallpaper/Assets.xcassets/AppIcon.appiconset/icon_256x256.png" width="128" height="128" alt="WallFlow live wallpaper app icon for macOS">
 </p>
 
 <p align="center">
-  <strong>Live wallpapers for Mac.</strong><br>
-  Loop a video behind your desktop icons — the Mac take on Wallpaper Engine and the iPhone Lock Screen.
+  <strong>Free, open-source live wallpaper app for macOS.</strong><br>
+  Set an MP4, MOV, GIF, or WebM as an animated video wallpaper behind your desktop icons — a native Wallpaper Engine alternative for Mac.
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 
-macOS only accepts still images as the desktop picture. WallFlow places a click-through video window just under your desktop icons, so Finder stays fully usable while a clip loops like a real wallpaper. It is built with SwiftUI and AppKit, plays through AVFoundation, and pauses itself whenever you are not looking at the desktop.
+macOS only accepts still images as the desktop picture. WallFlow is a **live wallpaper (animated wallpaper) app for Mac** that places a click-through video window just under your desktop icons, so Finder stays fully usable while a video wallpaper loops like the real thing. It supports multiple monitors, wallpaper rotation and playlists, and pauses itself whenever you are not looking at the desktop to save battery. It is built with SwiftUI and AppKit, plays through AVFoundation, and runs natively on Apple Silicon and Intel Macs.
 
 ## Screenshots
 
@@ -36,6 +36,7 @@ More screenshots: add PNGs to docs/screenshots/ and uncomment.
 ## Contents
 
 - [Features](#features)
+- [WallFlow vs Wallpaper Engine](#wallflow-vs-wallpaper-engine)
 - [Requirements](#requirements)
 - [Install](#install)
 - [Quick start](#quick-start)
@@ -49,6 +50,7 @@ More screenshots: add PNGs to docs/screenshots/ and uncomment.
 - [Privacy and permissions](#privacy-and-permissions)
 - [Where your data lives](#where-your-data-lives)
 - [Troubleshooting](#troubleshooting)
+- [FAQ](#faq)
 - [Build from source](#build-from-source)
 - [Releasing](#releasing)
 - [Contributing](#contributing)
@@ -88,6 +90,24 @@ More screenshots: add PNGs to docs/screenshots/ and uncomment.
 - **Sparkle** auto-updates from GitHub Releases
 - No Screen Recording, Accessibility, or Full Disk Access permissions required
 - Sandboxed, with your library stored privately in the app's container
+
+## WallFlow vs Wallpaper Engine
+
+[Wallpaper Engine](https://www.wallpaperengine.io) is a popular Windows app for animated desktop wallpapers, and it has no Mac version. WallFlow brings the core idea, video wallpapers on your desktop, to macOS.
+
+| | WallFlow | Wallpaper Engine |
+| --- | --- | --- |
+| Platform | macOS 14+ (Apple Silicon and Intel) | Windows |
+| Price and license | Free, open source (MIT) | Paid, closed source |
+| Video wallpapers (MP4, MOV) | Yes | Yes |
+| GIF and WebM wallpapers | Yes, converted on import | Yes |
+| Multiple monitors | Yes, a different clip per display | Yes |
+| Rotation / playlists | Yes | Yes |
+| Auto-pause for fullscreen apps, battery, lock | Yes | Yes |
+| Community wallpaper catalog (Steam Workshop) | No, bring your own clips | Yes |
+| Interactive, web, and scene wallpapers | No, video only | Yes |
+
+WallFlow is deliberately focused: a lightweight, native, battery-friendly video wallpaper engine for the Mac.
 
 ## Requirements
 
@@ -341,6 +361,32 @@ Turn on **Settings → General → Also set as desktop picture**.
 
 **Launch at login does not stick.**
 Approve WallFlow in **System Settings → General → Login Items**.
+
+## FAQ
+
+**Can I use a video as my wallpaper on a Mac?**
+Not with System Settings alone, which only accepts still images and Apple's built-in dynamic wallpapers. An app like WallFlow plays a video behind your desktop icons instead.
+
+**Is there a Wallpaper Engine for Mac?**
+Wallpaper Engine is Windows-only. WallFlow is a free, open-source alternative for macOS that covers video wallpapers, multiple monitors, rotation, and automatic pausing. See [WallFlow vs Wallpaper Engine](#wallflow-vs-wallpaper-engine).
+
+**How do I set a GIF as my wallpaper on a Mac?**
+Drop the GIF into WallFlow. It converts it to a looping video and you can set it as your live wallpaper like any other clip.
+
+**Does a live wallpaper drain my Mac's battery?**
+WallFlow only decodes video while you can see the desktop. It pauses when another app is in front, an app is fullscreen, the Mac is locked, or Low Power Mode is on, and you can cap the frame rate or pause on battery. See [When WallFlow pauses](#when-wallflow-pauses).
+
+**Can I use different live wallpapers on each monitor?**
+Yes. Each display can loop its own clip, or all of them can share one.
+
+**Does WallFlow work on Apple Silicon and Intel Macs?**
+Yes. It is a native macOS 14+ app and runs on both.
+
+**Does it work with Spaces and Mission Control?**
+The video window appears on every Space. Turn on **Also set as desktop picture** so Mission Control and the lock screen show a matching still frame.
+
+**Is WallFlow free?**
+Yes. It is open source under the MIT license.
 
 ## Build from source
 
