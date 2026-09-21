@@ -14,6 +14,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Resolve packages
+        run: xcodebuild -resolvePackageDependencies -project WallFlow.xcodeproj -scheme WallFlow
+
       - name: Build and package
         env:
           SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}

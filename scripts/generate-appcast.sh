@@ -31,7 +31,11 @@ print(re.search(r"CURRENT_PROJECT_VERSION = ([0-9]+);", text).group(1))
 PY
 )"
 
-SIG="$(xcrun swift scripts/sign-update.swift "$SPARKLE_ED_PRIVATE_KEY" "$ZIP" | tail -n 1)"
+SIG="$(xcrun swift scripts/sign-update.swift "$(print -r -- "$SPARKLE_ED_PRIVATE_KEY" | tr -d '\r\n' | tr -d ' ')" "$ZIP" | tail -n 1)"
+if [[ -z "$SIG" || "$SIG" == *"error"* || "$SIG" == *"must be"* ]]; then
+  echo "sign-update failed" >&2
+  exit 1
+fi
 LENGTH="$(stat -f%z "$ZIP" 2>/dev/null || stat -c%s "$ZIP")"
 REPO="${GITHUB_REPOSITORY:-ritulsingh/WallFlow}"
 TAG="${GITHUB_REF_NAME:-v$VERSION}"

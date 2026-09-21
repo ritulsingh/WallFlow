@@ -7,8 +7,13 @@ if CommandLine.arguments.count < 3 {
     exit(2)
 }
 
-guard let seed = Data(base64Encoded: CommandLine.arguments[1]), seed.count == 32 else {
-    fputs("private key must be a 32-byte Ed25519 seed, base64 encoded\n", stderr)
+let keyString = CommandLine.arguments[1]
+    .trimmingCharacters(in: .whitespacesAndNewlines)
+    .replacingOccurrences(of: "\n", with: "")
+    .replacingOccurrences(of: "\r", with: "")
+
+guard let seed = Data(base64Encoded: keyString), seed.count == 32 else {
+    fputs("private key must be a 32-byte Ed25519 seed, base64 encoded (got \(keyString.count) chars)\n", stderr)
     exit(1)
 }
 
