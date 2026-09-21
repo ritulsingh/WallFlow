@@ -104,7 +104,7 @@ struct HeroDetailView: View {
 
     @ViewBuilder
     private func previewImage(for item: WallpaperItem) -> some View {
-        if let image = item.thumbnailImage ?? store.previewImage {
+        if let image = item.thumbnailImage {
             Image(nsImage: image)
                 .resizable()
         } else {
@@ -180,20 +180,7 @@ struct HeroDetailView: View {
 
     private var emptyState: some View {
         VStack(spacing: 14) {
-            Image("Logo")
-                .resizable()
-                .scaledToFill()
-                .frame(width: 108, height: 108)
-                .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .strokeBorder(.white.opacity(0.14), lineWidth: 0.5)
-                )
-                .shadow(color: Color.cyan.opacity(0.22), radius: 28, y: 10)
-
-            Text("WallFlow")
-                .font(.system(size: 32, weight: .semibold))
-                .foregroundStyle(.white)
+            BrandMark(size: 108, showName: true, axis: .vertical, nameColor: .white, glow: true)
 
             Text("Import a short MP4 or MOV to get started.")
                 .font(.subheadline)

@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct LiveWallpaperApp: App {
+struct WallFlowApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var store = SettingsStore.shared
 

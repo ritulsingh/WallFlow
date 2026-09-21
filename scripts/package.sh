@@ -3,7 +3,8 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DEST="$ROOT/dist"
-DERIVED="$DEST/DerivedData"
+DERIVED="$(mktemp -d "${TMPDIR:-/tmp}/wallflow-build.XXXX")"
+trap 'rm -rf "$DERIVED"' EXIT
 
 rm -rf "$DEST"
 mkdir -p "$DEST"

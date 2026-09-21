@@ -1,5 +1,4 @@
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct ContentView: View {
     @EnvironmentObject private var store: SettingsStore
@@ -18,15 +17,7 @@ struct ContentView: View {
         .frame(minWidth: 860, minHeight: 580)
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                HStack(spacing: 8) {
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 22, height: 22)
-                        .clipShape(RoundedRectangle(cornerRadius: 5, style: .continuous))
-                    Text("WallFlow")
-                        .font(.headline)
-                }
+                BrandMark(showName: true)
             }
             ToolbarItemGroup(placement: .primaryAction) {
                 Button {

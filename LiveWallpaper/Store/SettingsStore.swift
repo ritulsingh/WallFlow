@@ -1,4 +1,3 @@
-import AppKit
 import Foundation
 import ServiceManagement
 import UniformTypeIdentifiers
@@ -32,10 +31,7 @@ final class SettingsStore: ObservableObject {
     }
     @Published var isAppActive = true
     @Published var videoURL: URL?
-    @Published var videoDisplayName = ""
     @Published var videoAccessError: String?
-    @Published var videoDuration: TimeInterval?
-    @Published var previewImage: NSImage?
     @Published var searchText = ""
     @Published var isShowingImporter = false
     @Published var isImporting = false
@@ -242,10 +238,7 @@ final class SettingsStore: ObservableObject {
         currentID = nil
         defaults.removeObject(forKey: Keys.currentID)
         videoURL = nil
-        videoDisplayName = ""
         videoAccessError = nil
-        videoDuration = nil
-        previewImage = nil
         DesktopWindowManager.shared.clearVideo()
     }
 
@@ -253,8 +246,6 @@ final class SettingsStore: ObservableObject {
         isManuallyPaused.toggle()
         DesktopWindowManager.shared.applyPlaybackState()
     }
-
-    func stopAccessingVideo() {}
 
     func syncLaunchAtLoginFromSystem() {
         let enabled = SMAppService.mainApp.status == .enabled
@@ -293,9 +284,6 @@ final class SettingsStore: ObservableObject {
         selectedID = item.id
         defaults.set(item.id.uuidString, forKey: Keys.currentID)
         videoURL = item.videoURL
-        videoDisplayName = item.displayName
-        videoDuration = item.duration
-        previewImage = item.thumbnailImage
         videoAccessError = nil
         if userSelected {
             isManuallyPaused = false

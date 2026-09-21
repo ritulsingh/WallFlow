@@ -7,11 +7,7 @@ struct SettingsView: View {
         Form {
             Section {
                 HStack(spacing: 12) {
-                    Image("Logo")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 44, height: 44)
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    BrandMark(size: 44)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("WallFlow")
                             .font(.headline)

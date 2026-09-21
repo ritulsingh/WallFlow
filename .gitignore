@@ -10,6 +10,7 @@ dist/
 *.dSYM.zip
 *.dSYM
 xcuserdata/
+*.xcuserdatad
 *.playground
 timeline.xctimeline
 playground.xcworkspace

@@ -5,9 +5,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         SettingsStore.shared.restorePersistedVideo()
         SettingsStore.shared.syncLaunchAtLoginFromSystem()
-        PowerMonitor.shared.start()
-        FullscreenMonitor.shared.start()
-        AppActivityMonitor.shared.start()
+        PlaybackEnvironment.shared.start()
         DesktopWindowManager.shared.start()
     }
 
@@ -24,10 +22,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         DesktopWindowManager.shared.stop()
-        AppActivityMonitor.shared.stop()
-        FullscreenMonitor.shared.stop()
-        PowerMonitor.shared.stop()
-        SettingsStore.shared.stopAccessingVideo()
+        PlaybackEnvironment.shared.stop()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

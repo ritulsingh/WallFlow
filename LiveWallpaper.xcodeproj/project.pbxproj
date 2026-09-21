@@ -3,52 +3,32 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		A11A11A11A11A11A11A11A40 /* LiveWallpaperApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */; };
-		A11A11A11A11A11A11A11A41 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A21 /* AppDelegate.swift */; };
-		A11A11A11A11A11A11A11A42 /* DesktopWindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */; };
-		A11A11A11A11A11A11A11A43 /* WallpaperWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A23 /* WallpaperWindow.swift */; };
-		A11A11A11A11A11A11A11A44 /* VideoLoopController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */; };
-		A11A11A11A11A11A11A11A45 /* PowerMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */; };
-		A11A11A11A11A11A11A11A46 /* FullscreenMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */; };
-		A11A11A11A11A11A11A11A53 /* AppActivityMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A35 /* AppActivityMonitor.swift */; };
-		A11A11A11A11A11A11A11A47 /* NSScreen+DisplayID.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */; };
-		A11A11A11A11A11A11A11A48 /* SettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A28 /* SettingsStore.swift */; };
-		A11A11A11A11A11A11A11A49 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A29 /* ContentView.swift */; };
-		A11A11A11A11A11A11A11A4A /* StatusMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */; };
-		A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2B /* SettingsView.swift */; };
-		A11A11A11A11A11A11A11A4C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2C /* Assets.xcassets */; };
-		A11A11A11A11A11A11A11A4D /* VideoDropCatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */; };
-		A11A11A11A11A11A11A11A51 /* HeroPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A33 /* HeroPlayerView.swift */; };
-		A11A11A11A11A11A11A11A4F /* WallpaperLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A31 /* WallpaperLibrary.swift */; };
-		A11A11A11A11A11A11A11A50 /* WallpaperInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A11A11A11A11A11A11A11A32 /* WallpaperInspectorView.swift */; };
-/* End PBXBuildFile section */
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "LiveWallpaper" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = A11A11A11A11A11A11A11A02 /* LiveWallpaper */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		A11A11A11A11A11A11A11A61 /* LiveWallpaper */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "LiveWallpaper" target */,
+			);
+			path = LiveWallpaper;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFileReference section */
 		A11A11A11A11A11A11A11A06 /* WallFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WallFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWallpaperApp.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesktopWindowManager.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A23 /* WallpaperWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperWindow.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoLoopController.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PowerMonitor.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullscreenMonitor.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A35 /* AppActivityMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppActivityMonitor.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSScreen+DisplayID.swift"; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A28 /* SettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsStore.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A29 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusMenuView.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A2B /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoDropCatcher.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A33 /* HeroPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroPlayerView.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A31 /* WallpaperLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperLibrary.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A32 /* WallpaperInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallpaperInspectorView.swift; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A2C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A2D /* LiveWallpaper.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveWallpaper.entitlements; sourceTree = "<group>"; };
-		A11A11A11A11A11A11A11A2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +45,7 @@
 		A11A11A11A11A11A11A11A07 = {
 			isa = PBXGroup;
 			children = (
-				A11A11A11A11A11A11A11A09 /* LiveWallpaper */,
+				A11A11A11A11A11A11A11A61 /* LiveWallpaper */,
 				A11A11A11A11A11A11A11A08 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -76,57 +56,6 @@
 				A11A11A11A11A11A11A11A06 /* WallFlow.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A11A11A11A11A11A11A11A09 /* LiveWallpaper */ = {
-			isa = PBXGroup;
-			children = (
-				A11A11A11A11A11A11A11A20 /* LiveWallpaperApp.swift */,
-				A11A11A11A11A11A11A11A21 /* AppDelegate.swift */,
-				A11A11A11A11A11A11A11A0A /* Engine */,
-				A11A11A11A11A11A11A11A0B /* Store */,
-				A11A11A11A11A11A11A11A0C /* UI */,
-				A11A11A11A11A11A11A11A2C /* Assets.xcassets */,
-				A11A11A11A11A11A11A11A2D /* LiveWallpaper.entitlements */,
-				A11A11A11A11A11A11A11A2E /* Info.plist */,
-			);
-			path = LiveWallpaper;
-			sourceTree = "<group>";
-		};
-		A11A11A11A11A11A11A11A0A /* Engine */ = {
-			isa = PBXGroup;
-			children = (
-				A11A11A11A11A11A11A11A22 /* DesktopWindowManager.swift */,
-				A11A11A11A11A11A11A11A23 /* WallpaperWindow.swift */,
-				A11A11A11A11A11A11A11A24 /* VideoLoopController.swift */,
-				A11A11A11A11A11A11A11A25 /* PowerMonitor.swift */,
-				A11A11A11A11A11A11A11A26 /* FullscreenMonitor.swift */,
-				A11A11A11A11A11A11A11A35 /* AppActivityMonitor.swift */,
-				A11A11A11A11A11A11A11A27 /* NSScreen+DisplayID.swift */,
-			);
-			path = Engine;
-			sourceTree = "<group>";
-		};
-		A11A11A11A11A11A11A11A0B /* Store */ = {
-			isa = PBXGroup;
-			children = (
-				A11A11A11A11A11A11A11A28 /* SettingsStore.swift */,
-				A11A11A11A11A11A11A11A31 /* WallpaperLibrary.swift */,
-			);
-			path = Store;
-			sourceTree = "<group>";
-		};
-		A11A11A11A11A11A11A11A0C /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				A11A11A11A11A11A11A11A29 /* ContentView.swift */,
-				A11A11A11A11A11A11A11A2A /* StatusMenuView.swift */,
-				A11A11A11A11A11A11A11A2B /* SettingsView.swift */,
-				A11A11A11A11A11A11A11A2F /* VideoDropCatcher.swift */,
-				A11A11A11A11A11A11A11A33 /* HeroPlayerView.swift */,
-				A11A11A11A11A11A11A11A32 /* WallpaperInspectorView.swift */,
-			);
-			path = UI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +73,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				A11A11A11A11A11A11A11A61 /* LiveWallpaper */,
+			);
 			name = LiveWallpaper;
 			productName = LiveWallpaper;
 			productReference = A11A11A11A11A11A11A11A06 /* WallFlow.app */;
@@ -160,7 +92,7 @@
 				LastUpgradeCheck = 1600;
 			};
 			buildConfigurationList = A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "LiveWallpaper" */;
-			compatibilityVersion = "Xcode 14.0";
+			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -168,6 +100,8 @@
 				Base,
 			);
 			mainGroup = A11A11A11A11A11A11A11A07;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = A11A11A11A11A11A11A11A08 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -182,7 +116,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A11A11A11A11A11A11A11A4C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,23 +126,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A11A11A11A11A11A11A11A40 /* LiveWallpaperApp.swift in Sources */,
-				A11A11A11A11A11A11A11A41 /* AppDelegate.swift in Sources */,
-				A11A11A11A11A11A11A11A42 /* DesktopWindowManager.swift in Sources */,
-				A11A11A11A11A11A11A11A43 /* WallpaperWindow.swift in Sources */,
-				A11A11A11A11A11A11A11A44 /* VideoLoopController.swift in Sources */,
-				A11A11A11A11A11A11A11A45 /* PowerMonitor.swift in Sources */,
-				A11A11A11A11A11A11A11A46 /* FullscreenMonitor.swift in Sources */,
-				A11A11A11A11A11A11A11A53 /* AppActivityMonitor.swift in Sources */,
-				A11A11A11A11A11A11A11A47 /* NSScreen+DisplayID.swift in Sources */,
-				A11A11A11A11A11A11A11A48 /* SettingsStore.swift in Sources */,
-				A11A11A11A11A11A11A11A49 /* ContentView.swift in Sources */,
-				A11A11A11A11A11A11A11A4A /* StatusMenuView.swift in Sources */,
-				A11A11A11A11A11A11A11A4B /* SettingsView.swift in Sources */,
-				A11A11A11A11A11A11A11A4D /* VideoDropCatcher.swift in Sources */,
-				A11A11A11A11A11A11A11A51 /* HeroPlayerView.swift in Sources */,
-				A11A11A11A11A11A11A11A4F /* WallpaperLibrary.swift in Sources */,
-				A11A11A11A11A11A11A11A50 /* WallpaperInspectorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +227,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -326,10 +243,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				DEAD_CODE_STRIPPING = YES;
-				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -338,7 +254,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LiveWallpaper/LiveWallpaper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LiveWallpaper/WallFlow.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -365,7 +281,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LiveWallpaper/LiveWallpaper.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LiveWallpaper/WallFlow.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;

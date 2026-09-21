@@ -1,5 +1,4 @@
 import AppKit
-import Combine
 
 @MainActor
 final class DesktopWindowManager {
@@ -62,7 +61,7 @@ final class DesktopWindowManager {
     func applyPlaybackState() {
         let store = SettingsStore.shared
         let globalPlay = store.shouldEnginePlay
-        let covered = store.pauseWhenFullscreen ? FullscreenMonitor.shared.coveredDisplayIDs : []
+        let covered = store.pauseWhenFullscreen ? PlaybackEnvironment.shared.coveredDisplayIDs : []
 
         for (displayID, window) in windows {
             if globalPlay && !covered.contains(displayID) {
