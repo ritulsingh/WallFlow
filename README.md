@@ -53,6 +53,7 @@ More screenshots: add PNGs to docs/screenshots/ and uncomment.
 - [FAQ](#faq)
 - [Build from source](#build-from-source)
 - [Releasing](#releasing)
+- [Security](#security)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -433,6 +434,10 @@ Pull requests and pushes to `main` run a Debug build on GitHub Actions. To publi
 3. GitHub Actions runs `scripts/package.sh`, builds the Release zip, and publishes a GitHub Release with `WallFlow-macOS.zip` and the Sparkle `appcast.xml`.
 
 For in-app updates, add the GitHub Actions secret `SPARKLE_ED_PRIVATE_KEY` with the contents of `secrets/sparkle_ed_private.key` (gitignored). The matching public key is already in `Info.plist`. Without the secret, releases still publish the zip but not the update feed.
+
+## Security
+
+Found a vulnerability? Please report it privately instead of opening a public issue. See [SECURITY.md](SECURITY.md) for how to report it and what to expect.
 
 ## Contributing
 
