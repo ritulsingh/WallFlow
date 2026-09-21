@@ -10,14 +10,20 @@ struct StatusMenuView: View {
 
         Divider()
 
-        Text(store.currentItem?.prettyName ?? "No Wallpaper")
+        if store.connectedDisplays.count > 1 {
+            ForEach(store.connectedDisplays) { display in
+                Text("\(display.name): \(store.wallpaperItem(for: display.id)?.prettyName ?? "None")")
+            }
+        } else {
+            Text(store.currentItem?.prettyName ?? "No Wallpaper")
+        }
 
         Divider()
 
         Button(store.isManuallyPaused ? "Play" : "Pause") {
             store.toggleManualPlayback()
         }
-        .disabled(store.videoURL == nil)
+        .disabled(!store.hasAnyWallpaper)
         .keyboardShortcut("p")
 
         Button("Import Video…") {
@@ -26,7 +32,7 @@ struct StatusMenuView: View {
             store.chooseVideo()
         }
 
-        if store.videoURL != nil {
+        if store.hasAnyWallpaper {
             Button("Remove Wallpaper") {
                 store.clearVideo()
             }
@@ -42,6 +48,10 @@ struct StatusMenuView: View {
         Button("Settings…") {
             openSettings()
             NSApp.activate(ignoringOtherApps: true)
+        }
+
+        Button("Check for Updates…") {
+            UpdateController.shared.checkForUpdates()
         }
 
         Divider()

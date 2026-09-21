@@ -7,6 +7,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         SettingsStore.shared.syncLaunchAtLoginFromSystem()
         PlaybackEnvironment.shared.start()
         DesktopWindowManager.shared.start()
+        UpdateController.shared.start()
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {

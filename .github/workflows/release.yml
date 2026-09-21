@@ -14,21 +14,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Import Developer ID signing material
+      - name: Build and package
         env:
-          MACOS_CERTIFICATE_P12: ${{ secrets.MACOS_CERTIFICATE_P12 }}
-          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
-          MACOS_PROVISION_PROFILE: ${{ secrets.MACOS_PROVISION_PROFILE }}
-          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
-        run: zsh scripts/ci-import-signing.sh
-
-      - name: Build, notarize, and package
-        env:
-          REQUIRE_NOTARIZATION: "1"
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
-          APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
-          MACOS_SIGN_IDENTITY: ${{ secrets.MACOS_SIGN_IDENTITY }}
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
         run: zsh scripts/package.sh
 
       - name: Publish GitHub Release
@@ -39,4 +29,14 @@ jobs:
           body: |
             Download **WallFlow-macOS.zip**, unzip it, and drag **WallFlow** into Applications.
 
-            This build is signed with a Developer ID certificate and **notarized by Apple**. Open it like any other Mac app.
+            If macOS says it can’t be verified, right-click the app → **Open** → **Open**.
+            Ad-hoc builds are not notarized until Developer ID credentials are added.
+
+            Sparkle can update installed copies when this release also includes `appcast.xml`.
+
+      - name: Attach Sparkle appcast
+        if: hashFiles('dist/appcast.xml') != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/appcast.xml
+          fail_on_unmatched_files: true

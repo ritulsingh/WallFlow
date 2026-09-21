@@ -22,4 +22,9 @@ extension NSScreen {
     var backingPixelSize: CGSize {
         CGSize(width: frame.width * backingScaleFactor, height: frame.height * backingScaleFactor)
     }
+
+    var wallFlowName: String {
+        let name = localizedName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return name.isEmpty ? "Display \(displayID)" : name
+    }
 }

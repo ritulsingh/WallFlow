@@ -9,3 +9,4 @@
 - [ ] Set as Wallpaper and confirm desktop playback
 - [ ] Preview another library clip without a second desktop decoder
 - [ ] Switch to another app and confirm the wallpaper pauses
+- [ ] If you have two displays, set a different clip on each

@@ -85,13 +85,22 @@ struct ContentView: View {
             List(selection: selectionBinding) {
             Section(store.library.count == 1 ? "1 Video" : "\(store.library.count) Videos") {
                 ForEach(store.filteredLibrary) { item in
-                    SidebarRow(item: item, isCurrent: store.currentID == item.id)
+                    SidebarRow(item: item, isCurrent: store.isAssigned(item.id))
                         .tag(item.id)
                         .onTapGesture(count: 2) {
                             store.setCurrent(item)
                         }
                         .contextMenu {
-                            Button("Set as Wallpaper") { store.setCurrent(item) }
+                            if store.connectedDisplays.count > 1 {
+                                Button("Set on All Displays") { store.setCurrent(item) }
+                                ForEach(store.connectedDisplays) { display in
+                                    Button("Set on \(display.name)") {
+                                        store.setCurrent(item, displayIDs: [display.id])
+                                    }
+                                }
+                            } else {
+                                Button("Set as Wallpaper") { store.setCurrent(item) }
+                            }
                             Divider()
                             Button("Move to Trash", role: .destructive) {
                                 store.removeFromLibrary(item)

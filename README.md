@@ -14,16 +14,17 @@ macOS only accepts still images as the desktop picture. WallFlow places a click-
 ## Features
 
 - Import local **MP4, MOV, or M4V** files into a library (copied into Application Support)
-- **Set as Wallpaper** to play a clip on the desktop; browse other clips without starting them
+- **Set as Wallpaper** on all displays, or pick a display when more than one is connected
 - **Preview** a library clip in the app without running it in the background
-- **Multi-monitor** — one player per display
+- **Multi-monitor** — each display can loop its own clip
 - **Mute** (on by default) and **scale to fill** or fit
 - Play / pause from the main window or the menu bar
 - Pauses while you **work in another app**, browse a different clip, or an app goes **fullscreen**
 - Also pauses on **Low Power Mode**, **lock**, and **display sleep**
 - Optional pause on **battery**
 - **Launch at login**
-- Remembers your library and the current wallpaper across relaunch
+- **Sparkle** auto-update from GitHub Releases
+- Remembers your library and per-display wallpapers across relaunch
 
 ## Requirements
 
@@ -47,24 +48,26 @@ The app stays running after you close the main window. Use the menu bar extra to
 
 1. Import clips by drag-and-drop, **Add Video**, or **⌘O**.
 2. Click a clip in the sidebar to inspect it. This does **not** start it as wallpaper.
-3. Click **Set as Wallpaper** to play it on the desktop. Double-click a sidebar row to do the same.
+3. Click **Set as Wallpaper** to play it on the desktop. With more than one display, choose **All Displays** or a specific screen. Double-click a sidebar row to set it on every display.
 4. **Preview** plays the selected clip in the app only. The desktop wallpaper stays paused.
 5. While you work in another app, WallFlow pauses so the decoder is not running in the background. Click the desktop (or hide windows with **⌘H**) to resume.
 
 ## Build from source
 
-1. Open `LiveWallpaper.xcodeproj` in Xcode.
-2. Select the **LiveWallpaper** scheme and run it on **My Mac**.
+1. Open `WallFlow.xcodeproj` in Xcode.
+2. Select the **WallFlow** scheme and run it on **My Mac**.
 
 ```bash
 # Debug
-xcodebuild -project LiveWallpaper.xcodeproj -scheme LiveWallpaper -configuration Debug -destination 'platform=macOS' build
+xcodebuild -project WallFlow.xcodeproj -scheme WallFlow -configuration Debug -destination 'platform=macOS' build
 
 # Optimized zip in dist/WallFlow-macOS.zip
 zsh scripts/package.sh
 ```
 
-Pushing a `v*` tag publishes a GitHub Release from `scripts/package.sh`.
+Pull requests run a Debug build on GitHub Actions. Pushing a `v*` tag publishes a GitHub Release (zip + Sparkle `appcast.xml`).
+
+To enable in-app updates, add GitHub Actions secret `SPARKLE_ED_PRIVATE_KEY` with the contents of `secrets/sparkle_ed_private.key` (gitignored). The matching public key is already in Info.plist.
 
 ## Recommended clips
 
@@ -98,18 +101,20 @@ WallFlow video window   ← just under icons, ignores mouse
 macOS still wallpaper
 ```
 
-Imported files live in `~/Library/Application Support/WallFlow/`. Each display gets an `AVQueuePlayer` + `AVPlayerLooper` so short clips loop without a visible seek hitch. Only one clip is decoded at a time.
+Imported files live in `~/Library/Application Support/WallFlow/`. Each display gets its own `AVQueuePlayer` + `AVPlayerLooper`. Only assigned displays decode video.
 
 ## Project layout
 
 ```
+WallFlow.xcodeproj       # scheme and target: WallFlow
 LiveWallpaper/           # app sources (Xcode follows this folder)
-  App/                   # @main, AppDelegate
+  App/                   # @main, AppDelegate, Sparkle updater
   Engine/                # desktop windows, player, pause environment
-  Store/                 # library + settings
+  Store/                 # library + per-display settings
   UI/                    # SwiftUI
   Assets.xcassets
 scripts/package.sh       # Release zip (DerivedData stays in /tmp)
+.github/workflows/ci.yml # Debug build on pull requests
 ```
 
 ## Contributing

@@ -5,8 +5,8 @@ final class DesktopWindowManager {
     static let shared = DesktopWindowManager()
 
     private var windows: [CGDirectDisplayID: WallpaperWindow] = [:]
+    private var loadedURLs: [CGDirectDisplayID: URL] = [:]
     private var observations: [NSObjectProtocol] = []
-    private var loadedVideoURL: URL?
 
     private init() {}
 
@@ -34,12 +34,12 @@ final class DesktopWindowManager {
     }
 
     func loadCurrentVideo() {
-        loadedVideoURL = nil
+        loadedURLs.removeAll()
         rebuildWindows()
     }
 
     func clearVideo() {
-        loadedVideoURL = nil
+        loadedURLs.removeAll()
         tearDownAll()
     }
 
@@ -74,11 +74,6 @@ final class DesktopWindowManager {
 
     func rebuildWindows() {
         let store = SettingsStore.shared
-        guard let videoURL = store.videoURL else {
-            tearDownAll()
-            return
-        }
-
         let screens = NSScreen.screens
         let currentIDs = Set(screens.map(\.displayID))
 
@@ -86,34 +81,45 @@ final class DesktopWindowManager {
             windows[id]?.videoController.teardown()
             windows[id]?.close()
             windows[id] = nil
+            loadedURLs[id] = nil
         }
 
-        let videoChanged = loadedVideoURL != videoURL
         for screen in screens {
             let id = screen.displayID
+            guard let item = store.wallpaperItem(for: id),
+                  FileManager.default.fileExists(atPath: item.videoURL.path) else {
+                windows[id]?.videoController.teardown()
+                windows[id]?.close()
+                windows[id] = nil
+                loadedURLs[id] = nil
+                continue
+            }
+
+            let url = item.videoURL
             if let existing = windows[id] {
                 existing.match(screen: screen)
-                if videoChanged {
+                if loadedURLs[id] != url {
                     existing.videoController.load(
-                        url: videoURL,
+                        url: url,
                         muted: store.isMuted,
                         fill: store.scaleToFill,
                         maximumResolution: screen.backingPixelSize
                     )
+                    loadedURLs[id] = url
                 }
             } else {
                 let window = WallpaperWindow(screen: screen)
                 window.videoController.load(
-                    url: videoURL,
+                    url: url,
                     muted: store.isMuted,
                     fill: store.scaleToFill,
                     maximumResolution: screen.backingPixelSize
                 )
                 windows[id] = window
+                loadedURLs[id] = url
             }
         }
 
-        loadedVideoURL = videoURL
         applyPlaybackState()
         orderWindowsFront()
     }
@@ -124,6 +130,6 @@ final class DesktopWindowManager {
             window.close()
         }
         windows.removeAll()
-        loadedVideoURL = nil
+        loadedURLs.removeAll()
     }
 }

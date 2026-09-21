@@ -43,6 +43,15 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            Section("Updates") {
+                Button("Check for Updates…") {
+                    UpdateController.shared.checkForUpdates()
+                }
+                Text("WallFlow checks GitHub Releases once a day. Turn on automatic install from the Sparkle dialog when an update is offered.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             Section("Startup") {
                 Toggle("Launch at login", isOn: $store.launchAtLogin)
                 if let error = store.launchAtLoginError {

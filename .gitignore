@@ -33,3 +33,6 @@ AuthKey_*.p8
 *.mobileprovision
 *.provisionprofile
 Secrets.xcconfig
+secrets/
+*.pem
+sparkle_ed_private.key

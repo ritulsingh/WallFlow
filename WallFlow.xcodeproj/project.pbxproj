@@ -6,13 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A11A11A11A11A11A11A11A72 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A11A11A11A11A11A11A11A71 /* Sparkle */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "LiveWallpaper" target */ = {
+		A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "WallFlow" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = A11A11A11A11A11A11A11A02 /* LiveWallpaper */;
+			target = A11A11A11A11A11A11A11A02 /* WallFlow */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -20,7 +24,7 @@
 		A11A11A11A11A11A11A11A61 /* LiveWallpaper */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "LiveWallpaper" target */,
+				A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "WallFlow" target */,
 			);
 			path = LiveWallpaper;
 			sourceTree = "<group>";
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A11A11A11A11A11A11A11A72 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,9 +66,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A11A11A11A11A11A11A11A02 /* LiveWallpaper */ = {
+		A11A11A11A11A11A11A11A02 /* WallFlow */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A11A11A11A11A11A11A11A0E /* Build configuration list for PBXNativeTarget "LiveWallpaper" */;
+			buildConfigurationList = A11A11A11A11A11A11A11A0E /* Build configuration list for PBXNativeTarget "WallFlow" */;
 			buildPhases = (
 				A11A11A11A11A11A11A11A03 /* Sources */,
 				A11A11A11A11A11A11A11A04 /* Frameworks */,
@@ -76,8 +81,11 @@
 			fileSystemSynchronizedGroups = (
 				A11A11A11A11A11A11A11A61 /* LiveWallpaper */,
 			);
-			name = LiveWallpaper;
-			productName = LiveWallpaper;
+			name = WallFlow;
+			packageProductDependencies = (
+				A11A11A11A11A11A11A11A71 /* Sparkle */,
+			);
+			productName = WallFlow;
 			productReference = A11A11A11A11A11A11A11A06 /* WallFlow.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -91,7 +99,7 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 			};
-			buildConfigurationList = A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "LiveWallpaper" */;
+			buildConfigurationList = A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "WallFlow" */;
 			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -101,12 +109,15 @@
 			);
 			mainGroup = A11A11A11A11A11A11A11A07;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A11A11A11A11A11A11A11A70 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A11A11A11A11A11A11A11A08 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A11A11A11A11A11A11A11A02 /* LiveWallpaper */,
+				A11A11A11A11A11A11A11A02 /* WallFlow */,
 			);
 		};
 /* End PBXProject section */
@@ -258,9 +269,10 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = LiveWallpaper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -268,7 +280,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.WallFlow;
 				PRODUCT_NAME = WallFlow;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -285,7 +297,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
@@ -295,7 +307,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ritulsingh.WallFlow;
 				PRODUCT_NAME = WallFlow;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -306,7 +318,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "LiveWallpaper" */ = {
+		A11A11A11A11A11A11A11A0D /* Build configuration list for PBXProject "WallFlow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A11A11A11A11A11A11A11A0F /* Debug */,
@@ -315,7 +327,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A11A11A11A11A11A11A11A0E /* Build configuration list for PBXNativeTarget "LiveWallpaper" */ = {
+		A11A11A11A11A11A11A11A0E /* Build configuration list for PBXNativeTarget "WallFlow" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A11A11A11A11A11A11A11A11 /* Debug */,
@@ -325,6 +337,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A11A11A11A11A11A11A11A70 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A11A11A11A11A11A11A11A71 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A11A11A11A11A11A11A11A70 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A11A11A11A11A11A11A11A01 /* Project object */;
 }

@@ -13,14 +13,14 @@ Thanks for helping. WallFlow is a native **macOS 14+** SwiftUI + AppKit app. The
 ```bash
 git clone https://github.com/ritulsingh/WallFlow.git
 cd WallFlow
-open LiveWallpaper.xcodeproj
+open WallFlow.xcodeproj
 ```
 
-Select the **LiveWallpaper** scheme and run it on **My Mac** (⌘R).
+Select the **WallFlow** scheme and run it on **My Mac** (⌘R).
 
 ```bash
 # Debug build
-xcodebuild -project LiveWallpaper.xcodeproj -scheme LiveWallpaper \
+xcodebuild -project WallFlow.xcodeproj -scheme WallFlow \
   -configuration Debug -destination 'platform=macOS' build
 
 # Release zip in dist/WallFlow-macOS.zip
@@ -33,12 +33,12 @@ Xcode follows the `LiveWallpaper/` folder. Add new Swift files there — you do 
 
 | Path | What lives there |
 | --- | --- |
-| `LiveWallpaper/App/` | `@main`, `AppDelegate` |
+| `LiveWallpaper/App/` | `@main`, AppDelegate, Sparkle updater |
 | `LiveWallpaper/Engine/` | Desktop windows, video loop, pause environment |
-| `LiveWallpaper/Store/` | Library import and settings |
+| `LiveWallpaper/Store/` | Library import and per-display settings |
 | `LiveWallpaper/UI/` | SwiftUI |
 | `scripts/` | Package / signing helpers |
-| `.github/workflows/` | Tag `v*` → GitHub Release |
+| `.github/workflows/` | PR CI + tag `v*` GitHub Release |
 
 Imported clips are copied into `~/Library/Application Support/WallFlow/`. Do not check videos, thumbnails, or `dist/` into git.
 
@@ -58,7 +58,7 @@ Open an issue with:
 Keep the product a **local live wallpaper** for Mac:
 
 - Short local **MP4 / MOV / M4V** files
-- One decoder at a time
+- One decoder per display (clips can differ across monitors)
 - Pause when another app is in front, on Low Power Mode, fullscreen, lock, or display sleep
 - Click-through desktop window under icons
 
@@ -76,7 +76,7 @@ Online catalogs, iOS ports, and unsigned malware-style injectors are out of scop
 
 - Swift 5, `@MainActor` for UI and playback.
 - Prefer small types in the existing folders over new layers.
-- Do not start a second `AVPlayer` while the desktop wallpaper is playing.
+- Do not start a second `AVPlayer` on the same display.
 - Do not call `play()` until the item is ready; use the existing loop controller.
 - Persist settings off the view-update path (`Task { @MainActor in … }`), not inside a `didSet` that SwiftUI is rendering.
 - Leave `CODE_SIGN_IDENTITY = "-"` in the project for local Debug. Signing and notarization belong in `scripts/` and CI secrets, not in source.

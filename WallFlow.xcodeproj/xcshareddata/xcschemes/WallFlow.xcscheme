@@ -16,8 +16,8 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "A11A11A11A11A11A11A11A02"
                BuildableName = "WallFlow.app"
-               BlueprintName = "LiveWallpaper"
-               ReferencedContainer = "container:LiveWallpaper.xcodeproj">
+               BlueprintName = "WallFlow"
+               ReferencedContainer = "container:WallFlow.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,8 +45,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A11A11A11A11A11A11A11A02"
             BuildableName = "WallFlow.app"
-            BlueprintName = "LiveWallpaper"
-            ReferencedContainer = "container:LiveWallpaper.xcodeproj">
+            BlueprintName = "WallFlow"
+            ReferencedContainer = "container:WallFlow.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -62,8 +62,8 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "A11A11A11A11A11A11A11A02"
             BuildableName = "WallFlow.app"
-            BlueprintName = "LiveWallpaper"
-            ReferencedContainer = "container:LiveWallpaper.xcodeproj">
+            BlueprintName = "WallFlow"
+            ReferencedContainer = "container:WallFlow.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

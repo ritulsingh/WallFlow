@@ -47,5 +47,15 @@
 	<true/>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>SUFeedURL</key>
+	<string>https://github.com/ritulsingh/WallFlow/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>jc8H8C2narHUiHx7luFYx732Duiv9h9mGETiyvDcBGA=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
+	<key>SUEnableInstallerLauncherService</key>
+	<true/>
 </dict>
 </plist>

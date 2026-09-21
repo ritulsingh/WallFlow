@@ -1,6 +1,12 @@
+import AppKit
 import Foundation
 import ServiceManagement
 import UniformTypeIdentifiers
+
+struct ConnectedDisplay: Identifiable, Hashable {
+    let id: UInt32
+    let name: String
+}
 
 @MainActor
 final class SettingsStore: ObservableObject {
@@ -23,6 +29,7 @@ final class SettingsStore: ObservableObject {
         }
     }
     @Published var currentID: WallpaperItem.ID?
+    @Published var displayAssignments: [String: String] = [:]
     @Published var isPreviewing = false {
         didSet {
             guard isReady, isPreviewing != oldValue else { return }
@@ -93,13 +100,21 @@ final class SettingsStore: ObservableObject {
         return items.filter { $0.displayName.localizedCaseInsensitiveContains(query) }
     }
 
+    var connectedDisplays: [ConnectedDisplay] {
+        NSScreen.screens.map { ConnectedDisplay(id: $0.displayID, name: $0.wallFlowName) }
+    }
+
+    var hasAnyWallpaper: Bool {
+        connectedDisplays.contains { wallpaperItem(for: $0.id) != nil }
+    }
+
     var isBrowsingOtherVideo: Bool {
-        guard let selectedID, let currentID else { return false }
-        return selectedID != currentID
+        guard let selectedID else { return false }
+        return !isAssigned(selectedID)
     }
 
     var shouldEnginePlay: Bool {
-        guard videoURL != nil else { return false }
+        guard hasAnyWallpaper else { return false }
         if isManuallyPaused { return false }
         if isScreenLocked || isDisplayAsleep { return false }
         if pauseOnLowPowerMode && isLowPowerMode { return false }
@@ -111,7 +126,7 @@ final class SettingsStore: ObservableObject {
     }
 
     var menuBarSymbol: String {
-        if videoURL == nil { return "play.rectangle" }
+        if !hasAnyWallpaper { return "play.rectangle" }
         if isManuallyPaused { return "pause.rectangle.fill" }
         return "play.rectangle.fill"
     }
@@ -121,6 +136,7 @@ final class SettingsStore: ObservableObject {
 
     private enum Keys {
         static let currentID = "currentWallpaperID"
+        static let displayAssignments = "displayAssignmentsV1"
         static let isMuted = "isMuted"
         static let scaleToFill = "scaleToFill"
         static let isManuallyPaused = "isManuallyPaused"
@@ -140,23 +156,48 @@ final class SettingsStore: ObservableObject {
         pauseWhenUsingOtherApps = defaults.object(forKey: Keys.pauseWhenUsingOtherApps) as? Bool ?? true
         launchAtLogin = SMAppService.mainApp.status == .enabled
         library = WallpaperLibrary.load()
+        displayAssignments = defaults.dictionary(forKey: Keys.displayAssignments) as? [String: String] ?? [:]
         if let stored = defaults.string(forKey: Keys.currentID), let id = UUID(uuidString: stored) {
             currentID = id
             selectedID = id
         } else {
             selectedID = library.first?.id
         }
+        migrateLegacyAssignmentIfNeeded()
+        refreshDerivedWallpaperState()
         isReady = true
+    }
+
+    func wallpaperID(for displayID: UInt32) -> WallpaperItem.ID? {
+        if let raw = displayAssignments[String(displayID)], let id = UUID(uuidString: raw) {
+            return id
+        }
+        return nil
+    }
+
+    func wallpaperItem(for displayID: UInt32) -> WallpaperItem? {
+        guard let id = wallpaperID(for: displayID) else { return nil }
+        return library.first { $0.id == id }
+    }
+
+    func isAssigned(_ id: WallpaperItem.ID) -> Bool {
+        connectedDisplays.contains { wallpaperID(for: $0.id) == id }
+    }
+
+    func assignmentLabel(for item: WallpaperItem) -> String? {
+        let names = connectedDisplays.compactMap { wallpaperID(for: $0.id) == item.id ? $0.name : nil }
+        guard !names.isEmpty else { return nil }
+        if names.count == connectedDisplays.count, connectedDisplays.count > 1 {
+            return "All displays"
+        }
+        return names.joined(separator: " · ")
     }
 
     func restorePersistedVideo() {
         library = WallpaperLibrary.load()
-        if let currentID, let item = library.first(where: { $0.id == currentID }) {
-            apply(item, userSelected: false)
-            return
-        }
-        currentID = nil
-        videoURL = nil
+        migrateLegacyAssignmentIfNeeded()
+        refreshDerivedWallpaperState()
+        DesktopWindowManager.shared.loadCurrentVideo()
     }
 
     func chooseVideo() {
@@ -205,14 +246,17 @@ final class SettingsStore: ObservableObject {
         }
     }
 
-    func setCurrent(_ item: WallpaperItem) {
+    func setCurrent(_ item: WallpaperItem, displayIDs: [UInt32]? = nil) {
         isPreviewing = false
         selectedID = item.id
-        apply(item, userSelected: true)
+        let targets = displayIDs ?? connectedDisplays.map(\.id)
+        guard apply(item, to: targets, userSelected: true) else { return }
+        persistAssignments()
+        DesktopWindowManager.shared.loadCurrentVideo()
     }
 
     func togglePreview() {
-        guard selectedItem != nil, selectedID != currentID else { return }
+        guard let selectedItem, !isAssigned(selectedItem.id) else { return }
         isPreviewing.toggle()
     }
 
@@ -222,9 +266,7 @@ final class SettingsStore: ObservableObject {
     }
 
     func removeFromLibrary(_ item: WallpaperItem) {
-        if currentID == item.id {
-            clearVideo()
-        }
+        removeAssignment(for: item)
         WallpaperLibrary.delete(item)
         library.removeAll { $0.id == item.id }
         WallpaperLibrary.save(library)
@@ -233,8 +275,17 @@ final class SettingsStore: ObservableObject {
         }
     }
 
+    func removeAssignment(for item: WallpaperItem) {
+        displayAssignments = displayAssignments.filter { $0.value != item.id.uuidString }
+        persistAssignments()
+        refreshDerivedWallpaperState()
+        DesktopWindowManager.shared.loadCurrentVideo()
+    }
+
     func clearVideo() {
         isPreviewing = false
+        displayAssignments.removeAll()
+        persistAssignments()
         currentID = nil
         defaults.removeObject(forKey: Keys.currentID)
         videoURL = nil
@@ -274,12 +325,16 @@ final class SettingsStore: ObservableObject {
         }
     }
 
-    private func apply(_ item: WallpaperItem, userSelected: Bool) {
+    @discardableResult
+    private func apply(_ item: WallpaperItem, to displayIDs: [UInt32], userSelected: Bool) -> Bool {
         guard FileManager.default.fileExists(atPath: item.videoURL.path) else {
             videoAccessError = "This clip is missing. Import it again."
-            return
+            return false
         }
 
+        for displayID in displayIDs {
+            displayAssignments[String(displayID)] = item.id.uuidString
+        }
         currentID = item.id
         selectedID = item.id
         defaults.set(item.id.uuidString, forKey: Keys.currentID)
@@ -288,7 +343,34 @@ final class SettingsStore: ObservableObject {
         if userSelected {
             isManuallyPaused = false
         }
-        DesktopWindowManager.shared.loadCurrentVideo()
+        return true
+    }
+
+    private func migrateLegacyAssignmentIfNeeded() {
+        guard displayAssignments.isEmpty, let currentID else { return }
+        for display in connectedDisplays {
+            displayAssignments[String(display.id)] = currentID.uuidString
+        }
+        persistAssignments()
+    }
+
+    private func refreshDerivedWallpaperState() {
+        let assigned = connectedDisplays.compactMap { wallpaperItem(for: $0.id) }
+        if let currentID, assigned.contains(where: { $0.id == currentID }) {
+            videoURL = library.first { $0.id == currentID }?.videoURL
+        } else if let first = assigned.first {
+            currentID = first.id
+            defaults.set(first.id.uuidString, forKey: Keys.currentID)
+            videoURL = first.videoURL
+        } else {
+            currentID = nil
+            videoURL = nil
+        }
+    }
+
+    private func persistAssignments() {
+        defaults.set(displayAssignments, forKey: Keys.displayAssignments)
+        refreshDerivedWallpaperState()
     }
 
     private func persist(_ value: Bool, key: String) {

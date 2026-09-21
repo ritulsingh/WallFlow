@@ -10,8 +10,8 @@ rm -rf "$DEST"
 mkdir -p "$DEST"
 
 xcodebuild \
-  -project "$ROOT/LiveWallpaper.xcodeproj" \
-  -scheme LiveWallpaper \
+  -project "$ROOT/WallFlow.xcodeproj" \
+  -scheme WallFlow \
   -configuration Release \
   -destination "generic/platform=macOS" \
   -derivedDataPath "$DERIVED" \
@@ -27,5 +27,9 @@ fi
 
 ditto "$APP" "$DEST/WallFlow.app"
 ditto -c -k --keepParent "$DEST/WallFlow.app" "$DEST/WallFlow-macOS.zip"
+
+if [[ -n "${SPARKLE_ED_PRIVATE_KEY:-}" ]]; then
+  zsh "$ROOT/scripts/generate-appcast.sh" "$DEST/WallFlow-macOS.zip"
+fi
 
 echo "Packaged $DEST/WallFlow-macOS.zip"

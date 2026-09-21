@@ -20,7 +20,7 @@ struct HeroDetailView: View {
     }
 
     private func hero(for item: WallpaperItem, size: CGSize) -> some View {
-        let isCurrent = store.currentID == item.id
+        let isCurrent = store.isAssigned(item.id)
 
         return ZStack(alignment: .bottom) {
             previewImage(for: item)
@@ -80,7 +80,13 @@ struct HeroDetailView: View {
                         .monospacedDigit()
                         .foregroundStyle(.white.opacity(0.72))
 
-                    if !isCurrent, store.currentID != nil {
+                    if let label = store.assignmentLabel(for: item) {
+                        Text(label)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.white.opacity(0.7))
+                    }
+
+                    if !isCurrent, store.hasAnyWallpaper {
                         Text("Desktop wallpaper paused while you browse")
                             .font(.caption)
                             .foregroundStyle(.white.opacity(0.55))
@@ -139,15 +145,9 @@ struct HeroDetailView: View {
                     )
                 }
                 .buttonStyle(HUDButtonStyle(prominent: false))
-
-                Button {
-                    store.setCurrent(item)
-                } label: {
-                    Label("Set as Wallpaper", systemImage: "desktopcomputer")
-                }
-                .buttonStyle(HUDButtonStyle(prominent: true))
-                .disabled(store.isImporting)
             }
+
+            wallpaperMenu(for: item)
 
             HUDIconButton(
                 systemName: store.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill",
@@ -165,7 +165,7 @@ struct HeroDetailView: View {
 
             if isCurrent {
                 HUDIconButton(systemName: "stop.fill", help: "Stop Wallpaper") {
-                    store.clearVideo()
+                    store.removeAssignment(for: item)
                 }
             }
 
@@ -176,6 +176,42 @@ struct HeroDetailView: View {
         .padding(6)
         .background(.ultraThinMaterial, in: Capsule())
         .shadow(color: .black.opacity(0.25), radius: 18, y: 8)
+    }
+
+    @ViewBuilder
+    private func wallpaperMenu(for item: WallpaperItem) -> some View {
+        let displays = store.connectedDisplays
+        if displays.count <= 1 {
+            Button {
+                store.setCurrent(item)
+            } label: {
+                Label("Set as Wallpaper", systemImage: "desktopcomputer")
+            }
+            .buttonStyle(HUDButtonStyle(prominent: true))
+            .disabled(store.isImporting)
+        } else {
+            Menu {
+                Button("All Displays") {
+                    store.setCurrent(item)
+                }
+                ForEach(displays) { display in
+                    Button {
+                        store.setCurrent(item, displayIDs: [display.id])
+                    } label: {
+                        if store.wallpaperID(for: display.id) == item.id {
+                            Label(display.name, systemImage: "checkmark")
+                        } else {
+                            Text(display.name)
+                        }
+                    }
+                }
+            } label: {
+                Label("Set as Wallpaper", systemImage: "desktopcomputer")
+            }
+            .menuStyle(.borderlessButton)
+            .buttonStyle(HUDButtonStyle(prominent: true))
+            .disabled(store.isImporting)
+        }
     }
 
     private var emptyState: some View {
