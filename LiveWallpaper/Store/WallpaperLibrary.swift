@@ -32,6 +32,11 @@ struct WallpaperItem: Identifiable, Codable, Hashable {
             .replacingOccurrences(of: "_", with: " ")
             .replacingOccurrences(of: ".com", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
+        let words = cleaned.split(separator: " ")
+        // "valley-misty-moewalls-com" is a downloaded-from-site filename; drop the "<site> com" tail.
+        if words.count > 3, words.last?.lowercased() == "com" {
+            return words.dropLast(2).map { $0.localizedCapitalized }.joined(separator: " ")
+        }
         let titled = cleaned
             .split(separator: " ")
             .map { $0.localizedCapitalized }

@@ -3,15 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 71;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		A11A11A11A11A11A11A11A72 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A11A11A11A11A11A11A11A71 /* Sparkle */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXFileReference section */
+		A11A11A11A11A11A11A11A06 /* WallFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WallFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "WallFlow" target */ = {
+		A11A11A11A11A11A11A11A60 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -21,19 +25,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A11A11A11A11A11A11A11A61 /* LiveWallpaper */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				A11A11A11A11A11A11A11A60 /* Exceptions for "LiveWallpaper" folder in "WallFlow" target */,
-			);
-			path = LiveWallpaper;
-			sourceTree = "<group>";
-		};
+		A11A11A11A11A11A11A11A61 /* LiveWallpaper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (A11A11A11A11A11A11A11A60 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = LiveWallpaper; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
-
-/* Begin PBXFileReference section */
-		A11A11A11A11A11A11A11A06 /* WallFlow.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WallFlow.app; sourceTree = BUILT_PRODUCTS_DIR; };
-/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A11A11A11A11A11A11A11A04 /* Frameworks */ = {
@@ -112,7 +105,6 @@
 			packageReferences = (
 				A11A11A11A11A11A11A11A70 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
-			preferredProjectObjectVersion = 77;
 			productRefGroup = A11A11A11A11A11A11A11A08 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -237,8 +229,8 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;

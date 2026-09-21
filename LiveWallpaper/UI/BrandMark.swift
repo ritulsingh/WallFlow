@@ -15,16 +15,19 @@ struct BrandMark: View {
             .clipShape(RoundedRectangle(cornerRadius: size * 0.22, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: size * 0.22, style: .continuous)
-                    .strokeBorder(.white.opacity(size > 40 ? 0.14 : 0), lineWidth: 0.5)
+                    .strokeBorder(.white.opacity(size > 40 ? 0.12 : 0), lineWidth: 0.5)
             )
-            .shadow(color: glow ? Color.cyan.opacity(0.22) : .clear, radius: 28, y: 10)
+            .shadow(color: glow ? Color.accentColor.opacity(0.28) : .clear, radius: 24, y: 8)
 
         let name = Text("WallFlow")
-            .font(size > 40 ? .system(size: 32, weight: .semibold) : .headline)
+            .font(size > 40
+                  ? .system(size: 30, weight: .semibold, design: .rounded)
+                  : .system(size: 14, weight: .semibold, design: .rounded))
             .foregroundStyle(nameColor)
+            .tracking(-0.2)
 
         if showName, axis == .vertical {
-            VStack(spacing: 14) {
+            VStack(spacing: 16) {
                 mark
                 name
             }

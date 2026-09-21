@@ -20,11 +20,11 @@ struct WallFlowApp: App {
         } label: {
             Image(systemName: store.menuBarSymbol)
         }
+        .menuBarExtraStyle(.window)
 
         Settings {
             SettingsView()
                 .environmentObject(store)
-                .frame(width: 420)
         }
     }
 }
