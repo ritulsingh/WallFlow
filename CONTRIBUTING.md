@@ -34,13 +34,13 @@ Xcode follows the `LiveWallpaper/` folder. Add new Swift files there — you do 
 | Path | What lives there |
 | --- | --- |
 | `LiveWallpaper/App/` | `@main`, AppDelegate, Sparkle updater |
-| `LiveWallpaper/Engine/` | Desktop windows, video loop, pause environment |
-| `LiveWallpaper/Store/` | Library import and per-display settings |
+| `LiveWallpaper/Engine/` | Desktop windows, video loop, pause environment, rotation timer, desktop-picture sync |
+| `LiveWallpaper/Store/` | Library import, settings, sort/filter, media conversion |
 | `LiveWallpaper/UI/` | SwiftUI |
 | `scripts/` | Package / signing helpers |
 | `.github/workflows/` | PR CI + tag `v*` GitHub Release |
 
-Imported clips are copied into `~/Library/Application Support/WallFlow/`. Do not check videos, thumbnails, or `dist/` into git.
+Imported clips are copied into the app's sandbox container (`~/Library/Containers/com.ritulsingh.WallFlow/Data/Library/Application Support/WallFlow/`). Do not check videos, thumbnails, or `dist/` into git.
 
 ## How to contribute
 
@@ -57,12 +57,12 @@ Open an issue with:
 
 Keep the product a **local live wallpaper** for Mac:
 
-- Short local **MP4 / MOV / M4V** files
+- Short **MP4 / MOV / M4V** clips (GIF, WebM, and MKV are converted to MP4 on import)
 - One decoder per display (clips can differ across monitors)
 - Pause when another app is in front, on Low Power Mode, fullscreen, lock, or display sleep
 - Click-through desktop window under icons
 
-Online catalogs, iOS ports, and unsigned malware-style injectors are out of scope.
+Online wallpaper catalogs, iOS ports, and unsigned malware-style injectors are out of scope.
 
 ### Pull requests
 
