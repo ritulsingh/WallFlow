@@ -28,5 +28,8 @@ Icon
 
 # Secrets
 *.p12
+*.p8
+AuthKey_*.p8
 *.mobileprovision
+*.provisionprofile
 Secrets.xcconfig

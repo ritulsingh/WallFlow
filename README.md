@@ -35,8 +35,9 @@ macOS only accepts still images as the desktop picture. WallFlow places a click-
 
 1. Download **WallFlow-macOS.zip** from the [latest GitHub Release](https://github.com/ritulsingh/WallFlow/releases/latest).
 2. Unzip it and drag **WallFlow** into **Applications**.
-3. Open WallFlow. If macOS says it can’t be verified, right-click the app → **Open** → **Open**.
-   This build is ad-hoc signed (not Apple-notarized), so that extra click is expected.
+3. Open WallFlow.
+
+Starting with the next release after Apple notarization credentials are added, Gatekeeper should accept the app without the right-click workaround. Current GitHub copies stay ad-hoc until those credentials exist.
 
 Then drop a short MP4 or MOV onto the window, or click **Add Video**. Select a clip and choose **Set as Wallpaper**. Hide WallFlow or click the desktop to see it behind your icons.
 
@@ -110,6 +111,10 @@ LiveWallpaper/           # app sources (Xcode follows this folder)
   Assets.xcassets
 scripts/package.sh       # Release zip (DerivedData stays in /tmp)
 ```
+
+## Contributing
+
+Bug reports, small fixes, and focused features are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the project map, and pull-request expectations.
 
 ## License
 
