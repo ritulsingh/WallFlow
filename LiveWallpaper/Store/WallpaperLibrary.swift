@@ -11,6 +11,12 @@ struct WallpaperItem: Identifiable, Codable, Hashable {
     var pixelWidth: Int?
     var pixelHeight: Int?
     var addedAt: Date
+    var favorite: Bool?
+    var collection: String?
+
+    var isFavorite: Bool { favorite ?? false }
+
+    var pixelCount: Int { (pixelWidth ?? 0) * (pixelHeight ?? 0) }
 
     var videoURL: URL {
         WallpaperLibrary.videosDirectory.appendingPathComponent(fileName)
@@ -98,7 +104,7 @@ enum WallpaperLibrary {
     }
 
     static func isSupportedVideo(_ url: URL) -> Bool {
-        ["mp4", "mov", "m4v"].contains(url.pathExtension.lowercased())
+        MediaConverter.supportedExtensions.contains(url.pathExtension.lowercased())
     }
 
     static func importVideo(from source: URL) throws -> WallpaperItem {
@@ -114,14 +120,20 @@ enum WallpaperLibrary {
         }
 
         let id = UUID()
-        let ext = source.pathExtension.isEmpty ? "mp4" : source.pathExtension.lowercased()
+        let sourceExtension = source.pathExtension.lowercased()
+        let converts = MediaConverter.needsConversion(sourceExtension)
+        let ext = converts ? "mp4" : (sourceExtension.isEmpty ? "mp4" : sourceExtension)
         let fileName = "\(id.uuidString).\(ext)"
         let destination = videosDirectory.appendingPathComponent(fileName)
 
         if FileManager.default.fileExists(atPath: destination.path) {
             try FileManager.default.removeItem(at: destination)
         }
-        try FileManager.default.copyItem(at: source, to: destination)
+        if converts {
+            try MediaConverter.convert(source, to: destination)
+        } else {
+            try FileManager.default.copyItem(at: source, to: destination)
+        }
 
         let metadata = videoMetadata(for: destination)
         let thumbName = "\(id.uuidString).jpg"

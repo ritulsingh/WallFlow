@@ -7,6 +7,7 @@ final class DesktopWindowManager {
     private var windows: [CGDirectDisplayID: WallpaperWindow] = [:]
     private var loadedURLs: [CGDirectDisplayID: URL] = [:]
     private var observations: [NSObjectProtocol] = []
+    private var appliedFrameRateLimit = 0
 
     private init() {}
 
@@ -41,12 +42,19 @@ final class DesktopWindowManager {
     func clearVideo() {
         loadedURLs.removeAll()
         tearDownAll()
+        DesktopStill.shared.sync()
     }
 
     func handleSettingsChange() {
         let store = SettingsStore.shared
+        if store.frameRateLimit != appliedFrameRateLimit {
+            loadedURLs.removeAll()
+            rebuildWindows()
+            return
+        }
         for window in windows.values {
-            window.videoController.setMuted(store.isMuted)
+            window.videoController.setAudio(muted: store.isMuted, volume: store.volume)
+            window.videoController.setSpeed(store.playbackSpeed)
             window.videoController.setFill(store.scaleToFill)
         }
         applyPlaybackState()
@@ -74,6 +82,7 @@ final class DesktopWindowManager {
 
     func rebuildWindows() {
         let store = SettingsStore.shared
+        appliedFrameRateLimit = store.frameRateLimit
         let screens = NSScreen.screens
         let currentIDs = Set(screens.map(\.displayID))
 
@@ -99,22 +108,12 @@ final class DesktopWindowManager {
             if let existing = windows[id] {
                 existing.match(screen: screen)
                 if loadedURLs[id] != url {
-                    existing.videoController.load(
-                        url: url,
-                        muted: store.isMuted,
-                        fill: store.scaleToFill,
-                        maximumResolution: screen.backingPixelSize
-                    )
+                    load(url, into: existing, on: screen)
                     loadedURLs[id] = url
                 }
             } else {
                 let window = WallpaperWindow(screen: screen)
-                window.videoController.load(
-                    url: url,
-                    muted: store.isMuted,
-                    fill: store.scaleToFill,
-                    maximumResolution: screen.backingPixelSize
-                )
+                load(url, into: window, on: screen)
                 windows[id] = window
                 loadedURLs[id] = url
             }
@@ -122,6 +121,20 @@ final class DesktopWindowManager {
 
         applyPlaybackState()
         orderWindowsFront()
+        DesktopStill.shared.sync()
+    }
+
+    private func load(_ url: URL, into window: WallpaperWindow, on screen: NSScreen) {
+        let store = SettingsStore.shared
+        window.videoController.load(
+            url: url,
+            muted: store.isMuted,
+            volume: store.volume,
+            fill: store.scaleToFill,
+            speed: store.playbackSpeed,
+            frameRateLimit: store.frameRateLimit,
+            maximumResolution: screen.backingPixelSize
+        )
     }
 
     private func tearDownAll() {

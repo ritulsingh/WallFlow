@@ -27,17 +27,20 @@ struct InspectorView: View {
             VStack(alignment: .leading, spacing: 16) {
                 preview(for: item, isCurrent: isCurrent)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.prettyName)
-                        .font(.title2.weight(.semibold))
-                        .lineLimit(2)
-                    Text(item.infoLabel)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
-                    Text(assignmentText(for: item, isCurrent: isCurrent))
-                        .font(.subheadline)
-                        .foregroundStyle(isCurrent ? Color.accentColor : Color.secondary)
+                HStack(alignment: .top, spacing: 8) {
+                    titleBlock(for: item, isCurrent: isCurrent)
+                    Spacer(minLength: 0)
+                    Button {
+                        store.toggleFavorite(item)
+                    } label: {
+                        Image(systemName: item.isFavorite ? "heart.fill" : "heart")
+                            .font(.system(size: 16))
+                            .foregroundStyle(item.isFavorite ? Color.pink : Color.secondary)
+                            .frame(width: 28, height: 28)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .help(item.isFavorite ? "Remove from Favorites" : "Add to Favorites")
                 }
 
                 if let error = store.videoAccessError {
@@ -49,12 +52,59 @@ struct InspectorView: View {
                 actions(for: item, isCurrent: isCurrent)
 
                 VStack(alignment: .leading, spacing: 8) {
+                    Text("Organize")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
+
+                    HStack {
+                        Label("Collection", systemImage: "folder")
+                        Spacer(minLength: 8)
+                        CollectionMenu(item: item)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .fill(Color.primary.opacity(0.05))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10, style: .continuous)
+                            .strokeBorder(WallFlowTheme.hairline, lineWidth: 1)
+                    )
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
                     Text("Playback")
                         .font(.subheadline.weight(.semibold))
                         .foregroundStyle(.secondary)
 
                     VStack(spacing: 0) {
                         toggleRow("Mute", isOn: $store.isMuted)
+                        Divider()
+                        HStack {
+                            Text("Volume")
+                            Spacer(minLength: 8)
+                            Slider(value: $store.volume, in: 0...1)
+                                .controlSize(.small)
+                                .frame(width: 120)
+                        }
+                        .padding(.vertical, 9)
+                        .disabled(store.isMuted)
+                        .opacity(store.isMuted ? 0.45 : 1)
+                        Divider()
+                        HStack {
+                            Text("Speed")
+                            Spacer(minLength: 8)
+                            Picker("Speed", selection: $store.playbackSpeed) {
+                                ForEach(Self.speeds, id: \.self) { speed in
+                                    Text(speedLabel(speed)).tag(speed)
+                                }
+                            }
+                            .labelsHidden()
+                            .pickerStyle(.menu)
+                            .fixedSize()
+                        }
+                        .padding(.vertical, 6)
                         Divider()
                         toggleRow("Scale to fill", isOn: $store.scaleToFill)
                     }
@@ -80,6 +130,32 @@ struct InspectorView: View {
             }
             .padding(16)
         }
+    }
+
+    private func titleBlock(for item: WallpaperItem, isCurrent: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(item.prettyName)
+                .font(.title2.weight(.semibold))
+                .lineLimit(2)
+            Text(item.infoLabel)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+            if let collection = item.collection {
+                Label(collection, systemImage: "folder")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+            }
+            Text(assignmentText(for: item, isCurrent: isCurrent))
+                .font(.subheadline)
+                .foregroundStyle(isCurrent ? Color.accentColor : Color.secondary)
+        }
+    }
+
+    private static let speeds: [Double] = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 2]
+
+    private func speedLabel(_ speed: Double) -> String {
+        (speed == speed.rounded() ? String(format: "%.0f", speed) : String(format: "%g", speed)) + "×"
     }
 
     private func toggleRow(_ title: String, isOn: Binding<Bool>) -> some View {

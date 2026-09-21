@@ -21,6 +21,14 @@ struct StatusMenuView: View {
                     store.toggleManualPlayback()
                 }
 
+                MenuRow(
+                    title: "Next Wallpaper",
+                    systemImage: "forward.fill",
+                    isEnabled: store.hasAnyWallpaper && store.library.count > 1
+                ) {
+                    store.rotateWallpaper(force: true)
+                }
+
                 MenuRow(title: "Import Video…", systemImage: "plus") {
                     showMainWindow()
                     store.chooseVideo()

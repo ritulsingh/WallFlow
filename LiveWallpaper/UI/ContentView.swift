@@ -29,13 +29,21 @@ struct ContentView: View {
                     .fixedSize()
             }
             ToolbarItemGroup(placement: .primaryAction) {
-                Button {
-                    store.chooseVideo()
+                Menu {
+                    Button("Import from File…") {
+                        store.chooseVideo()
+                    }
+                    .keyboardShortcut("o", modifiers: .command)
+
+                    Button("Import from URL…") {
+                        store.isShowingURLImporter = true
+                    }
+                    .keyboardShortcut("o", modifiers: [.command, .shift])
                 } label: {
                     Label("Import Video", systemImage: "plus")
                 }
+                .menuIndicator(.hidden)
                 .help("Import Video")
-                .keyboardShortcut("o", modifiers: .command)
 
                 Button {
                     openSettings()
@@ -56,6 +64,9 @@ struct ContentView: View {
         }
         .onAppear {
             store.syncLaunchAtLoginFromSystem()
+        }
+        .sheet(isPresented: $store.isShowingURLImporter) {
+            URLImportSheet()
         }
         .fileImporter(
             isPresented: $store.isShowingImporter,
@@ -107,7 +118,7 @@ private struct EmptyLibraryView: View {
             VStack(spacing: 6) {
                 Text("Bring your desktop to life")
                     .font(.title3.weight(.semibold))
-                Text("Drop a short MP4, MOV, or M4V here, or choose one from your Mac.")
+                Text("Drop a short MP4, MOV, GIF, or WebM here, or choose one from your Mac.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
@@ -119,6 +130,11 @@ private struct EmptyLibraryView: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+
+            Button("Import from URL…") {
+                store.isShowingURLImporter = true
+            }
+            .buttonStyle(.link)
 
             if let error = store.videoAccessError {
                 Text(error)
@@ -145,6 +161,7 @@ private struct LibraryGrid: View {
     var body: some View {
         VStack(spacing: 0) {
             filterBar
+            filterChips
 
             ScrollView {
                 LazyVGrid(columns: columns, alignment: .leading, spacing: 22) {
@@ -204,13 +221,77 @@ private struct LibraryGrid: View {
 
             Spacer(minLength: 0)
 
-            Text(store.library.count == 1 ? "1 video" : "\(store.library.count) videos")
+            Text(countLabel)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
+
+            Menu {
+                Picker("Sort By", selection: $store.librarySort) {
+                    ForEach(LibrarySort.allCases) { sort in
+                        Text(sort.title).tag(sort)
+                    }
+                }
+                .pickerStyle(.inline)
+            } label: {
+                Label("Sort", systemImage: "arrow.up.arrow.down")
+                    .labelStyle(.iconOnly)
+            }
+            .menuStyle(.borderlessButton)
+            .menuIndicator(.hidden)
+            .fixedSize()
+            .help("Sort by \(store.librarySort.title)")
         }
         .padding(.horizontal, 22)
         .padding(.top, 12)
         .padding(.bottom, 10)
+    }
+
+    private var countLabel: String {
+        let shown = store.filteredLibrary.count
+        let total = store.library.count
+        if shown == total {
+            return total == 1 ? "1 video" : "\(total) videos"
+        }
+        return "\(shown) of \(total)"
+    }
+
+    private var filterChips: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                FilterChip(title: "All", systemImage: "square.grid.2x2", filter: .all)
+                FilterChip(title: "Favorites", systemImage: "heart.fill", filter: .favorites)
+                ForEach(store.collections, id: \.self) { name in
+                    FilterChip(title: name, systemImage: "folder", filter: .collection(name))
+                }
+            }
+            .padding(.horizontal, 22)
+        }
+        .padding(.bottom, 10)
+    }
+}
+
+private struct FilterChip: View {
+    @EnvironmentObject private var store: SettingsStore
+    let title: String
+    let systemImage: String
+    let filter: LibraryFilter
+
+    var body: some View {
+        let isActive = store.activeFilter == filter
+        Button {
+            store.libraryFilter = filter
+        } label: {
+            Label(title, systemImage: systemImage)
+                .font(.subheadline.weight(.medium))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 5)
+                .foregroundStyle(isActive ? Color.white : Color.primary)
+                .background(
+                    Capsule().fill(isActive ? Color.accentColor : Color.primary.opacity(0.08))
+                )
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isActive ? .isSelected : [])
     }
 }
 
@@ -256,6 +337,8 @@ private struct ClipCard: View {
     let isSelected: Bool
     let isCurrent: Bool
     @State private var isHovering = false
+    @State private var isNamingCollection = false
+    @State private var newCollectionName = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -266,6 +349,22 @@ private struct ClipCard: View {
                     if isCurrent {
                         StatusPill(text: "Current", color: .green)
                             .padding(8)
+                    }
+                }
+                .overlay(alignment: .topTrailing) {
+                    if item.isFavorite || isHovering {
+                        Button {
+                            store.toggleFavorite(item)
+                        } label: {
+                            Image(systemName: item.isFavorite ? "heart.fill" : "heart")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(item.isFavorite ? Color.pink : Color.white)
+                                .frame(width: 26, height: 26)
+                                .background(.black.opacity(0.5), in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .padding(7)
+                        .help(item.isFavorite ? "Remove from Favorites" : "Add to Favorites")
                     }
                 }
                 .clipShape(RoundedRectangle(cornerRadius: WallFlowTheme.cardRadius, style: .continuous))
@@ -311,9 +410,47 @@ private struct ClipCard: View {
                 Button("Set as Wallpaper") { store.setCurrent(item) }
             }
             Divider()
+            Button(item.isFavorite ? "Remove from Favorites" : "Add to Favorites") {
+                store.toggleFavorite(item)
+            }
+            Menu("Collection") {
+                ForEach(store.collections, id: \.self) { name in
+                    Button {
+                        store.setCollection(name, for: item)
+                    } label: {
+                        if item.collection == name {
+                            Label(name, systemImage: "checkmark")
+                        } else {
+                            Text(name)
+                        }
+                    }
+                }
+                if !store.collections.isEmpty {
+                    Divider()
+                }
+                Button("New Collection…") {
+                    newCollectionName = ""
+                    isNamingCollection = true
+                }
+                if item.collection != nil {
+                    Button("Remove from Collection") {
+                        store.setCollection(nil, for: item)
+                    }
+                }
+            }
+            Divider()
             Button("Move to Trash", role: .destructive) {
                 store.removeFromLibrary(item)
             }
+        }
+        .alert("New Collection", isPresented: $isNamingCollection) {
+            TextField("Name", text: $newCollectionName)
+            Button("Create") {
+                store.setCollection(newCollectionName, for: item)
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("“\(item.prettyName)” will be added to this collection.")
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(item.prettyName)
@@ -361,6 +498,16 @@ private struct NowPlayingBar: View {
             }
 
             Spacer()
+
+            if store.hasAnyWallpaper, store.library.count > 1 {
+                Button {
+                    store.rotateWallpaper(force: true)
+                } label: {
+                    Label("Next", systemImage: "forward.fill")
+                }
+                .controlSize(.regular)
+                .help("Switch to the next wallpaper")
+            }
 
             if store.hasAnyWallpaper {
                 Button {

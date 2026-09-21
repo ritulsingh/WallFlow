@@ -14,8 +14,11 @@ final class SettingsStore: ObservableObject {
 
     static let allowedVideoTypes: [UTType] = {
         var types: [UTType] = [.mpeg4Movie, .quickTimeMovie, .movie]
-        if let m4v = UTType(filenameExtension: "m4v") {
-            types.append(m4v)
+        types.append(.gif)
+        for ext in ["m4v", "webm", "mkv", "avi"] {
+            if let type = UTType(filenameExtension: ext) {
+                types.append(type)
+            }
         }
         return types
     }()
@@ -42,6 +45,51 @@ final class SettingsStore: ObservableObject {
     @Published var searchText = ""
     @Published var isShowingImporter = false
     @Published var isImporting = false
+    @Published var isShowingURLImporter = false
+    @Published var libraryFilter: LibraryFilter = .all
+
+    @Published var librarySort: LibrarySort {
+        didSet {
+            guard isReady else { return }
+            defaults.set(librarySort.rawValue, forKey: Keys.librarySort)
+        }
+    }
+
+    @Published var volume: Double {
+        didSet { persist(volume, key: Keys.volume) }
+    }
+
+    @Published var playbackSpeed: Double {
+        didSet { persist(playbackSpeed, key: Keys.playbackSpeed) }
+    }
+
+    @Published var frameRateLimit: Int {
+        didSet { persist(frameRateLimit, key: Keys.frameRateLimit) }
+    }
+
+    @Published var setStaticDesktop: Bool {
+        didSet {
+            guard isReady else { return }
+            defaults.set(setStaticDesktop, forKey: Keys.setStaticDesktop)
+            DesktopStill.shared.sync()
+        }
+    }
+
+    @Published var rotationEnabled: Bool {
+        didSet { persistRotation(rotationEnabled, key: Keys.rotationEnabled) }
+    }
+
+    @Published var rotationIntervalMinutes: Int {
+        didSet { persistRotation(rotationIntervalMinutes, key: Keys.rotationInterval) }
+    }
+
+    @Published var rotationShuffle: Bool {
+        didSet { persistRotation(rotationShuffle, key: Keys.rotationShuffle) }
+    }
+
+    @Published var rotationSourceKey: String {
+        didSet { persistRotation(rotationSourceKey, key: Keys.rotationSource) }
+    }
 
     @Published var isMuted: Bool {
         didSet { persist(isMuted, key: Keys.isMuted) }
@@ -93,11 +141,32 @@ final class SettingsStore: ObservableObject {
         library.first { $0.id == currentID }
     }
 
+    var collections: [String] {
+        Set(library.compactMap(\.collection)).sorted { $0.localizedStandardCompare($1) == .orderedAscending }
+    }
+
+    var favoriteCount: Int {
+        library.filter(\.isFavorite).count
+    }
+
+    var activeFilter: LibraryFilter {
+        if case .collection(let name) = libraryFilter, !collections.contains(name) {
+            return .all
+        }
+        return libraryFilter
+    }
+
     var filteredLibrary: [WallpaperItem] {
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let items = library.sorted { $0.addedAt > $1.addedAt }
-        guard !query.isEmpty else { return items }
-        return items.filter { $0.displayName.localizedCaseInsensitiveContains(query) }
+        let filter = activeFilter
+        var items = library.filter { filter.matches($0) }
+        if !query.isEmpty {
+            items = items.filter {
+                $0.displayName.localizedCaseInsensitiveContains(query)
+                    || $0.prettyName.localizedCaseInsensitiveContains(query)
+            }
+        }
+        return items.sorted(by: librarySort.areInIncreasingOrder)
     }
 
     var connectedDisplays: [ConnectedDisplay] {
@@ -144,6 +213,15 @@ final class SettingsStore: ObservableObject {
         static let pauseOnLowPowerMode = "pauseOnLowPowerMode"
         static let pauseWhenFullscreen = "pauseWhenFullscreen"
         static let pauseWhenUsingOtherApps = "pauseWhenUsingOtherApps"
+        static let volume = "volume"
+        static let playbackSpeed = "playbackSpeed"
+        static let frameRateLimit = "frameRateLimit"
+        static let setStaticDesktop = "setStaticDesktop"
+        static let librarySort = "librarySort"
+        static let rotationEnabled = "rotationEnabled"
+        static let rotationInterval = "rotationIntervalMinutes"
+        static let rotationShuffle = "rotationShuffle"
+        static let rotationSource = "rotationSource"
     }
 
     private init() {
@@ -154,6 +232,15 @@ final class SettingsStore: ObservableObject {
         pauseOnLowPowerMode = defaults.object(forKey: Keys.pauseOnLowPowerMode) as? Bool ?? true
         pauseWhenFullscreen = defaults.object(forKey: Keys.pauseWhenFullscreen) as? Bool ?? true
         pauseWhenUsingOtherApps = defaults.object(forKey: Keys.pauseWhenUsingOtherApps) as? Bool ?? true
+        volume = defaults.object(forKey: Keys.volume) as? Double ?? 1
+        playbackSpeed = defaults.object(forKey: Keys.playbackSpeed) as? Double ?? 1
+        frameRateLimit = defaults.object(forKey: Keys.frameRateLimit) as? Int ?? 0
+        setStaticDesktop = defaults.bool(forKey: Keys.setStaticDesktop)
+        rotationEnabled = defaults.bool(forKey: Keys.rotationEnabled)
+        rotationIntervalMinutes = defaults.object(forKey: Keys.rotationInterval) as? Int ?? 30
+        rotationShuffle = defaults.object(forKey: Keys.rotationShuffle) as? Bool ?? true
+        rotationSourceKey = defaults.string(forKey: Keys.rotationSource) ?? "all"
+        librarySort = defaults.string(forKey: Keys.librarySort).flatMap(LibrarySort.init(rawValue:)) ?? .recent
         launchAtLogin = SMAppService.mainApp.status == .enabled
         library = WallpaperLibrary.load()
         displayAssignments = defaults.dictionary(forKey: Keys.displayAssignments) as? [String: String] ?? [:]
@@ -220,7 +307,7 @@ final class SettingsStore: ObservableObject {
     func importVideos(from urls: [URL]) {
         let supported = urls.filter { Self.isSupportedVideo($0) }
         guard !supported.isEmpty else {
-            videoAccessError = "Choose an MP4, MOV, or M4V file."
+            videoAccessError = "Choose an MP4, MOV, M4V, GIF, WebM, or MKV file."
             return
         }
 
@@ -250,7 +337,7 @@ final class SettingsStore: ObservableObject {
         isPreviewing = false
         selectedID = item.id
         let targets = displayIDs ?? connectedDisplays.map(\.id)
-        guard apply(item, to: targets, userSelected: true) else { return }
+        guard apply(item, to: targets, userSelected: true, select: true) else { return }
         persistAssignments()
         DesktopWindowManager.shared.loadCurrentVideo()
     }
@@ -293,6 +380,62 @@ final class SettingsStore: ObservableObject {
         DesktopWindowManager.shared.clearVideo()
     }
 
+    func toggleFavorite(_ item: WallpaperItem) {
+        update(item.id) { $0.favorite = !$0.isFavorite }
+    }
+
+    func setCollection(_ name: String?, for item: WallpaperItem) {
+        let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines)
+        update(item.id) { $0.collection = (trimmed?.isEmpty ?? true) ? nil : trimmed }
+    }
+
+    func rotateWallpaper(force: Bool = false) {
+        guard hasAnyWallpaper else { return }
+        if !force && (isManuallyPaused || isScreenLocked || isDisplayAsleep) { return }
+
+        let pool = rotationPool()
+        guard pool.count > 1 else { return }
+
+        let next: WallpaperItem?
+        if rotationShuffle {
+            next = pool.filter { $0.id != currentID }.randomElement()
+        } else if let currentID, let index = pool.firstIndex(where: { $0.id == currentID }) {
+            next = pool[(index + 1) % pool.count]
+        } else {
+            next = pool.first
+        }
+
+        guard let next, next.id != currentID else { return }
+        let targets = connectedDisplays.map(\.id).filter { wallpaperID(for: $0) != nil }
+        guard apply(next, to: targets, userSelected: false, select: !isAppActive) else { return }
+        persistAssignments()
+        DesktopWindowManager.shared.loadCurrentVideo()
+    }
+
+    func importRemoteVideo(from url: URL) async throws {
+        guard let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme) else {
+            throw MediaImportError.invalidURL
+        }
+
+        isImporting = true
+        videoAccessError = nil
+        do {
+            let (temporary, response) = try await URLSession.shared.download(from: url)
+            if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                throw MediaImportError.badResponse(http.statusCode)
+            }
+            let local = try Self.moveDownload(temporary, response: response, sourceURL: url)
+            defer { try? FileManager.default.removeItem(at: local.deletingLastPathComponent()) }
+            let item = try await Task.detached(priority: .userInitiated) {
+                try WallpaperLibrary.importVideo(from: local)
+            }.value
+            finishImport([item], error: nil)
+        } catch {
+            isImporting = false
+            throw error
+        }
+    }
+
     func toggleManualPlayback() {
         isManuallyPaused.toggle()
         DesktopWindowManager.shared.applyPlaybackState()
@@ -311,6 +454,45 @@ final class SettingsStore: ObservableObject {
         WallpaperLibrary.isSupportedVideo(url)
     }
 
+    private static func moveDownload(_ temporary: URL, response: URLResponse, sourceURL: URL) throws -> URL {
+        var name = sourceURL.lastPathComponent.removingPercentEncoding ?? sourceURL.lastPathComponent
+        var ext = (name as NSString).pathExtension.lowercased()
+
+        if !MediaConverter.supportedExtensions.contains(ext) {
+            let mimeExtensions = [
+                "video/mp4": "mp4", "video/quicktime": "mov", "video/x-m4v": "m4v",
+                "image/gif": "gif", "video/webm": "webm", "video/x-matroska": "mkv"
+            ]
+            guard let mime = response.mimeType?.lowercased(), let mapped = mimeExtensions[mime] else {
+                throw MediaImportError.unsupportedDownload
+            }
+            ext = mapped
+            name = ((name as NSString).deletingPathExtension.isEmpty ? "Downloaded Video" : (name as NSString).deletingPathExtension) + "." + ext
+        }
+
+        let directory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("wallflow-download-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let destination = directory.appendingPathComponent(name)
+        try FileManager.default.moveItem(at: temporary, to: destination)
+        return destination
+    }
+
+    private func update(_ id: WallpaperItem.ID, _ change: (inout WallpaperItem) -> Void) {
+        guard let index = library.firstIndex(where: { $0.id == id }) else { return }
+        change(&library[index])
+        WallpaperLibrary.save(library)
+    }
+
+    private func rotationPool() -> [WallpaperItem] {
+        let filter = LibraryFilter(storageKey: rotationSourceKey)
+        var items = library.filter { filter.matches($0) }
+        if items.isEmpty {
+            items = library
+        }
+        return items.sorted { $0.addedAt < $1.addedAt }
+    }
+
     private func finishImport(_ imported: [WallpaperItem], error: String?) {
         isImporting = false
         if !imported.isEmpty {
@@ -326,7 +508,7 @@ final class SettingsStore: ObservableObject {
     }
 
     @discardableResult
-    private func apply(_ item: WallpaperItem, to displayIDs: [UInt32], userSelected: Bool) -> Bool {
+    private func apply(_ item: WallpaperItem, to displayIDs: [UInt32], userSelected: Bool, select: Bool) -> Bool {
         guard FileManager.default.fileExists(atPath: item.videoURL.path) else {
             videoAccessError = "This clip is missing. Import it again."
             return false
@@ -336,7 +518,9 @@ final class SettingsStore: ObservableObject {
             displayAssignments[String(displayID)] = item.id.uuidString
         }
         currentID = item.id
-        selectedID = item.id
+        if select {
+            selectedID = item.id
+        }
         defaults.set(item.id.uuidString, forKey: Keys.currentID)
         videoURL = item.videoURL
         videoAccessError = nil
@@ -373,10 +557,16 @@ final class SettingsStore: ObservableObject {
         refreshDerivedWallpaperState()
     }
 
-    private func persist(_ value: Bool, key: String) {
+    private func persist(_ value: Any, key: String) {
         guard isReady else { return }
         defaults.set(value, forKey: key)
         scheduleEngineUpdate()
+    }
+
+    private func persistRotation(_ value: Any, key: String) {
+        guard isReady else { return }
+        defaults.set(value, forKey: key)
+        RotationScheduler.shared.reschedule()
     }
 
     private func scheduleEngineUpdate() {

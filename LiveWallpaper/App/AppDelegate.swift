@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         PlaybackEnvironment.shared.start()
         DesktopWindowManager.shared.start()
         UpdateController.shared.start()
+        RotationScheduler.shared.reschedule()
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {
@@ -22,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        RotationScheduler.shared.stop()
         DesktopWindowManager.shared.stop()
         PlaybackEnvironment.shared.stop()
     }
