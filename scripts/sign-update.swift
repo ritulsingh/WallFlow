@@ -25,7 +25,7 @@ guard let body = try? Data(contentsOf: url) else {
 
 do {
     let key = try Curve25519.Signing.PrivateKey(rawRepresentation: seed)
-    let signature = key.signature(for: body)
+    let signature = try key.signature(for: body)
     print(signature.base64EncodedString())
 } catch {
     fputs("\(error)\n", stderr)
