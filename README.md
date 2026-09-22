@@ -16,12 +16,12 @@
   <a href="LICENSE"><img alt="MIT license" src="https://img.shields.io/badge/license-MIT-green"></a>
 </p>
 
-macOS only accepts still images as the desktop picture. WallFlow is a **live wallpaper (animated wallpaper) app for Mac** that places a click-through video window just under your desktop icons, so Finder stays fully usable while a video wallpaper loops like the real thing. It supports multiple monitors, wallpaper rotation and playlists, and pauses itself whenever you are not looking at the desktop to save battery. It is built with SwiftUI and AppKit, plays through AVFoundation, and runs natively on Apple Silicon and Intel Macs.
+macOS only accepts still images as the desktop picture. WallFlow is a **live wallpaper (animated wallpaper) app for Mac** that places a click-through video window just under your desktop icons, so Finder stays fully usable while a video wallpaper loops like the real thing. It supports multiple monitors, wallpaper rotation and playlists, favorites and collections, Shortcuts/Siri automation, and pauses itself whenever you are not looking at the desktop to save battery. It stays out of your Dock and ⌘-Tab unless its window is open. It is built with SwiftUI and AppKit, plays through AVFoundation, and runs natively on Apple Silicon and Intel Macs.
 
 ## Screenshots
 
 <p align="center">
-  <img src="docs/screenshots/library.png" alt="WallFlow library: a grid of clips on the left, details and playback controls on the right" width="860">
+  <img src="docs/screenshots/library.png" alt="WallFlow library grid with Favorites and collection filter chips, a selected clip's details panel showing Live status and playback controls, and the now-playing bar with a Next button" width="860">
 </p>
 
 <!--
@@ -81,13 +81,17 @@ More screenshots: add PNGs to docs/screenshots/ and uncomment.
 
 - **Wallpaper rotation**: change the wallpaper every minute up to once a day, shuffled or in order, from all videos, your favorites, or a single collection
 - **Next Wallpaper** button in the app and the menu bar
+- **Shortcuts, Spotlight, and Siri**: Set Wallpaper, Next Wallpaper, and Pause/Resume Wallpaper actions, so you can trigger WallFlow from the Shortcuts app, a keyboard-shortcut tool, or your voice
+- **Finder Quick Action**: right-click a video file and choose **Services → Set as WallFlow Wallpaper** to import and set it without opening the app first
 - Pauses automatically on other apps, fullscreen, lock, display sleep, Low Power Mode, and (optionally) battery
 - **Launch at login**
 
 **Everything else**
 
 - Native macOS look that follows your light or dark appearance
+- Runs as a **menu-bar-only app**: no Dock icon or ⌘-Tab entry unless the main window or Settings is open
 - Menu-bar popover with the current wallpaper, play/pause, next, import, and settings
+- Warns when a clip's first and last frames don't match, so you know before a loop turns out to jump
 - **Sparkle** auto-updates from GitHub Releases
 - No Screen Recording, Accessibility, or Full Disk Access permissions required
 - Sandboxed, with your library stored privately in the app's container
@@ -123,7 +127,9 @@ WallFlow is deliberately focused: a lightweight, native, battery-friendly video 
 2. Unzip it and drag **WallFlow** into **Applications**.
 3. Open WallFlow.
 
-> **Use version 1.3.1 or newer.** Release 1.3.0 (and possibly 1.2.0) is ad-hoc signed in a way that stops the app launching on some Macs ("WallFlow cannot be opened because of a problem"). 1.3.1 fixes it.
+> **Use the [latest release](https://github.com/ritulsingh/WallFlow/releases/latest).** Releases 1.2.0 and 1.3.0 are ad-hoc signed in a way that stops the app launching on some Macs ("WallFlow cannot be opened because of a problem"). 1.3.1 and later fix it.
+
+WallFlow does not appear in the Dock or ⌘-Tab after it opens — it runs from the menu bar. Look for its icon in the menu bar to open it again. See [Using WallFlow](#using-wallflow).
 
 ### First launch and Gatekeeper
 
@@ -194,6 +200,26 @@ Rotation only changes displays that already have a wallpaper, and it waits while
 ### Menu bar
 
 The menu bar popover shows the current wallpaper, its Live or Paused state, and what each display is playing. It also offers **Play/Pause**, **Next Wallpaper**, **Import Video…**, **Remove Wallpaper**, **Open WallFlow**, **Settings…**, **Check for Updates…**, and **Quit**.
+
+### Dock icon
+
+WallFlow launches as a menu-bar-only app: it has no Dock icon and doesn't appear in ⌘-Tab. Opening the main window or Settings brings the Dock icon back automatically, and it disappears again once you close them. You never need to quit WallFlow to keep it out of the way — closing its window is enough.
+
+### Shortcuts, Spotlight, and Siri
+
+WallFlow adds three actions to the Shortcuts app (Automation → search "WallFlow"):
+
+| Action | What it does |
+| --- | --- |
+| **Set Wallpaper** | Sets a chosen video from your library as the wallpaper. Pick it from a list, with thumbnails, when building the shortcut. |
+| **Next Wallpaper** | Switches to the next video, the same as the **Next** button. |
+| **Pause or Resume Wallpaper** | Toggles playback. |
+
+Use them to build your own shortcuts (a keyboard shortcut, a Stream Deck button, a time-of-day automation), trigger them from Spotlight, or ask Siri, for example "Next wallpaper in WallFlow." WallFlow must have launched at least once for the actions to appear.
+
+### Finder Quick Action
+
+Right-click any MP4, MOV, or M4V file in Finder and choose **Services → Set as WallFlow Wallpaper**. WallFlow imports the file and sets it as your wallpaper in one step, without you needing to open the app first. If it doesn't appear right away, open WallFlow once so macOS picks up the service, or log out and back in.
 
 ## Settings reference
 
@@ -291,12 +317,15 @@ macOS still wallpaper
 ```
 
 - **One window per display.** Each `WallpaperWindow` is a borderless, click-through window one level below Finder's desktop-icon layer. It joins all Spaces and never becomes key or main.
-- **Gapless looping.** Each display runs an `AVQueuePlayer` with an `AVPlayerLooper`, so playback stays seamless. Only displays with an assigned clip decode video.
+- **Gapless looping.** Each display runs an `AVQueuePlayer` with an `AVPlayerLooper`, so playback stays seamless. Only displays with an assigned clip decode video. Fullscreen coverage checks and other idle work are skipped entirely when no wallpaper is set.
 - **Pause logic.** `PlaybackEnvironment` watches power source, Low Power Mode, the frontmost app, lock and sleep notifications, and fullscreen coverage. Fullscreen detection compares window bounds only, so **no Screen Recording permission** is needed. `SettingsStore.shouldEnginePlay` combines everything into one decision.
 - **Frame-rate cap.** AVPlayer has no frame-rate setting, so a lower cap is applied through an `AVVideoComposition` frame duration, and only when you enable it.
 - **Rotation.** `RotationScheduler` runs a timer and asks the store for the next clip from your chosen pool.
 - **Desktop picture sync.** `DesktopStill` renders a full-resolution frame per display and applies it with `NSWorkspace`, remembering your original picture so it can be restored.
 - **Conversion.** `MediaConverter` turns GIFs into MP4 with `AVAssetWriter` and shells out to ffmpeg for WebM, MKV, and AVI.
+- **Loop-mismatch check.** On import, WallFlow samples the first and last frame and flags clips likely to jump at the loop point, shown as a warning in the details panel.
+- **Menu-bar-only by default.** WallFlow launches with `LSUIElement` set, so it has no Dock icon. `AppDelegate` watches window visibility and switches `NSApp.activationPolicy` between `.regular` and `.accessory` as the main window or Settings opens and closes.
+- **Automation.** `WallFlowIntents.swift` exposes App Intents (Set Wallpaper, Next Wallpaper, Pause/Resume) to Shortcuts, Spotlight, and Siri. The Finder Quick Action is a Services-menu item declared in `Info.plist` and handled by `AppDelegate`.
 
 ## Privacy and permissions
 
@@ -363,6 +392,15 @@ Turn on **Settings → General → Also set as desktop picture**.
 **Launch at login does not stick.**
 Approve WallFlow in **System Settings → General → Login Items**.
 
+**I don't see WallFlow in the Dock or ⌘-Tab.**
+That's intentional — WallFlow runs as a menu-bar-only app. Click its menu bar icon and choose **Open WallFlow**; the Dock icon reappears while that window is open. See [Dock icon](#dock-icon).
+
+**WallFlow doesn't show up in the Shortcuts app.**
+Open WallFlow at least once first, so macOS registers its Shortcuts actions, then search "WallFlow" in the Shortcuts app.
+
+**"Set as WallFlow Wallpaper" isn't in Finder's right-click menu.**
+It's under **Services**, not the top-level Quick Actions row. Open WallFlow once, or log out and back in, so macOS refreshes its Services list.
+
 ## FAQ
 
 **Can I use a video as my wallpaper on a Mac?**
@@ -389,6 +427,9 @@ The video window appears on every Space. Turn on **Also set as desktop picture**
 **Is WallFlow free?**
 Yes. It is open source under the MIT license.
 
+**Can I control WallFlow with Shortcuts or Siri?**
+Yes. It adds Set Wallpaper, Next Wallpaper, and Pause/Resume Wallpaper actions to the Shortcuts app, which you can also trigger from Spotlight or Siri. See [Shortcuts, Spotlight, and Siri](#shortcuts-spotlight-and-siri).
+
 ## Build from source
 
 Requirements: macOS 14+ and Xcode 16+.
@@ -412,7 +453,7 @@ Xcode follows the `LiveWallpaper/` folder, so new Swift files are picked up auto
 ```
 WallFlow.xcodeproj        # scheme and target: WallFlow
 LiveWallpaper/            # app sources
-  App/                    # @main, AppDelegate, Sparkle updater
+  App/                    # @main, AppDelegate, Sparkle updater, Shortcuts/App Intents
   Engine/                 # desktop windows, video loop, pause environment,
                           #   rotation timer, desktop-picture sync
   Store/                  # settings, library, sort/filter, media conversion
