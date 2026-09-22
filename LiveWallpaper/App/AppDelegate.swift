@@ -3,6 +3,7 @@ import AppKit
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var windowObservations: [NSObjectProtocol] = []
+    private var dockVisibilityTimer: Timer?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         SettingsStore.shared.restorePersistedVideo()
@@ -27,6 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        dockVisibilityTimer?.invalidate()
         RotationScheduler.shared.stop()
         DesktopWindowManager.shared.stop()
         PlaybackEnvironment.shared.stop()
@@ -67,32 +69,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     /// WallFlow is a background agent (LSUIElement) so it doesn't clutter the Dock or ⌘-Tab
     /// while only the menu bar is in use. The Dock icon reappears whenever the main window or
     /// Settings is actually open, and hides again once they're closed.
+    ///
+    /// SwiftUI's `Window(id:)` scene is a reopenable singleton: clicking its close button orders
+    /// the window out instead of fully closing it, so `NSWindow.willCloseNotification` never
+    /// fires. Notifications alone can't be trusted here, so a cheap periodic check backs them up.
     private func observeDockVisibility() {
         let center = NotificationCenter.default
-        let immediate: [Notification.Name] = [
+        let names: [Notification.Name] = [
             NSWindow.didBecomeKeyNotification,
+            NSWindow.willCloseNotification,
             NSApplication.didHideNotification,
             NSApplication.didUnhideNotification
         ]
-        for name in immediate {
+        for name in names {
             windowObservations.append(
                 center.addObserver(forName: name, object: nil, queue: .main) { _ in
                     Task { @MainActor in AppDelegate.updateDockVisibility() }
                 }
             )
         }
-        // Deferred so NSApp.windows has already dropped the closed window by the time we check.
-        windowObservations.append(
-            center.addObserver(forName: NSWindow.willCloseNotification, object: nil, queue: .main) { _ in
-                DispatchQueue.main.async { AppDelegate.updateDockVisibility() }
-            }
-        )
+
+        let timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            Task { @MainActor in AppDelegate.updateDockVisibility() }
+        }
+        timer.tolerance = 0.3
+        dockVisibilityTimer = timer
+
         Task { @MainActor in AppDelegate.updateDockVisibility() }
     }
 
     private static func updateDockVisibility() {
+        // Excluding chrome (WallpaperWindow, the menu bar's own NSStatusBarWindow, its popover,
+        // etc.) turned out unreliable — SwiftUI's own main-window wrapper also reports
+        // isExcludedFromWindowsMenu = true, and NSStatusBarWindow is permanently visible, so that
+        // approach always saw a "visible app window". Whitelisting the SwiftUI-managed window
+        // class used by the Window(id:) and Settings scenes is the reliable signal instead.
         let hasVisibleAppWindow = NSApp.windows.contains { window in
-            window.isVisible && !window.isExcludedFromWindowsMenu && !(window is NSPanel)
+            window.isVisible && String(describing: type(of: window)) == "AppKitWindow"
         }
         let target: NSApplication.ActivationPolicy = hasVisibleAppWindow ? .regular : .accessory
         if NSApp.activationPolicy() != target {

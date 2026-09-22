@@ -347,7 +347,8 @@ private struct ClipCard: View {
                 .overlay { thumbnail }
                 .overlay(alignment: .bottomLeading) {
                     if isCurrent {
-                        StatusPill(text: "Current", color: .green)
+                        StatusPill(text: store.assignmentLabel(for: item) ?? "Current", color: .green)
+                            .frame(maxWidth: 160, alignment: .leading)
                             .padding(8)
                     }
                 }

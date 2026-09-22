@@ -14,6 +14,8 @@ struct StatusPill: View {
             Circle().fill(color).frame(width: 6, height: 6)
             Text(text)
                 .font(.caption2.weight(.semibold))
+                .lineLimit(1)
+                .truncationMode(.tail)
         }
         .foregroundStyle(.white)
         .padding(.horizontal, 8)
