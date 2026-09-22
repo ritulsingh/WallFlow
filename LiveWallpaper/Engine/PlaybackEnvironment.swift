@@ -113,6 +113,14 @@ final class PlaybackEnvironment {
     }
 
     func refreshFullscreen() {
+        // Nothing is playing, so skip the CGWindowListCopyWindowInfo scan on this 1.5s tick.
+        guard SettingsStore.shared.hasAnyWallpaper else {
+            if !coveredDisplayIDs.isEmpty {
+                coveredDisplayIDs = []
+                DesktopWindowManager.shared.applyPlaybackState()
+            }
+            return
+        }
         let next = Self.detectCoveredDisplays()
         guard next != coveredDisplayIDs else { return }
         coveredDisplayIDs = next

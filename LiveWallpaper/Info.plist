@@ -47,6 +47,28 @@
 	<true/>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Set as WallFlow Wallpaper</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>setAsWallpaperService</string>
+			<key>NSPortName</key>
+			<string>WallFlow</string>
+			<key>NSSendFileTypes</key>
+			<array>
+				<string>public.mpeg-4</string>
+				<string>com.apple.quicktime-movie</string>
+				<string>public.movie</string>
+			</array>
+		</dict>
+	</array>
 	<key>SUFeedURL</key>
 	<string>https://github.com/ritulsingh/WallFlow/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>

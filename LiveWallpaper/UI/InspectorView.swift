@@ -149,6 +149,12 @@ struct InspectorView: View {
             Text(assignmentText(for: item, isCurrent: isCurrent))
                 .font(.subheadline)
                 .foregroundStyle(isCurrent ? Color.accentColor : Color.secondary)
+
+            if item.loopMismatch == true {
+                Label("First and last frames don't quite match — the loop may jump", systemImage: "exclamationmark.triangle")
+                    .font(.caption)
+                    .foregroundStyle(.orange)
+            }
         }
     }
 

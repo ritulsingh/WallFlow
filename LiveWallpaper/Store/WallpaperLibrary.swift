@@ -13,6 +13,7 @@ struct WallpaperItem: Identifiable, Codable, Hashable {
     var addedAt: Date
     var favorite: Bool?
     var collection: String?
+    var loopMismatch: Bool?
 
     var isFavorite: Bool { favorite ?? false }
 
@@ -29,7 +30,7 @@ struct WallpaperItem: Identifiable, Codable, Hashable {
 
     var thumbnailImage: NSImage? {
         guard let thumbnailURL else { return nil }
-        return NSImage(contentsOf: thumbnailURL)
+        return ThumbnailCache.shared.image(for: thumbnailURL)
     }
 
     var prettyName: String {
@@ -59,6 +60,25 @@ struct WallpaperItem: Identifiable, Codable, Hashable {
             parts.append("\(pixelWidth)×\(pixelHeight)")
         }
         return parts.isEmpty ? "Imported video" : parts.joined(separator: "  ·  ")
+    }
+}
+
+/// Decoded thumbnails are reused across SwiftUI re-renders (e.g. hover state changes)
+/// instead of re-reading and re-decoding the JPEG from disk on every access.
+final class ThumbnailCache {
+    static let shared = ThumbnailCache()
+    private let cache = NSCache<NSURL, NSImage>()
+
+    private init() {}
+
+    func image(for url: URL) -> NSImage? {
+        let key = url as NSURL
+        if let cached = cache.object(forKey: key) {
+            return cached
+        }
+        guard let image = NSImage(contentsOf: url) else { return nil }
+        cache.setObject(image, forKey: key)
+        return image
     }
 }
 
@@ -139,6 +159,7 @@ enum WallpaperLibrary {
         let thumbName = "\(id.uuidString).jpg"
         let thumbURL = thumbsDirectory.appendingPathComponent(thumbName)
         let wroteThumb = writeThumbnail(from: destination, to: thumbURL)
+        let loopMismatch = detectLoopMismatch(for: destination, duration: metadata.duration)
 
         return WallpaperItem(
             id: id,
@@ -148,7 +169,8 @@ enum WallpaperLibrary {
             duration: metadata.duration,
             pixelWidth: metadata.width,
             pixelHeight: metadata.height,
-            addedAt: Date()
+            addedAt: Date(),
+            loopMismatch: loopMismatch
         )
     }
 
@@ -205,5 +227,55 @@ enum WallpaperLibrary {
         } catch {
             return false
         }
+    }
+
+    /// Compares the first and last frame so the UI can warn when a clip won't loop seamlessly.
+    private static func detectLoopMismatch(for url: URL, duration: TimeInterval?) -> Bool? {
+        guard let duration, duration > 1.2 else { return nil }
+
+        let asset = AVURLAsset(url: url)
+        let generator = AVAssetImageGenerator(asset: asset)
+        generator.appliesPreferredTrackTransform = true
+        generator.requestedTimeToleranceBefore = .positiveInfinity
+        generator.requestedTimeToleranceAfter = .positiveInfinity
+        let endTime = CMTime(seconds: max(0, duration - 0.15), preferredTimescale: 600)
+
+        guard let startImage = try? generator.copyCGImage(at: .zero, actualTime: nil),
+              let endImage = try? generator.copyCGImage(at: endTime, actualTime: nil)
+        else {
+            return nil
+        }
+
+        return frameDifference(startImage, endImage) > 0.12
+    }
+
+    private static func frameDifference(_ a: CGImage, _ b: CGImage) -> Double {
+        let side = 12
+        guard let pixelsA = averagedPixels(a, side: side), let pixelsB = averagedPixels(b, side: side) else {
+            return 0
+        }
+        var total = 0.0
+        for index in 0..<pixelsA.count {
+            total += abs(Double(pixelsA[index]) - Double(pixelsB[index]))
+        }
+        return total / Double(pixelsA.count) / 255.0
+    }
+
+    private static func averagedPixels(_ image: CGImage, side: Int) -> [UInt8]? {
+        var pixels = [UInt8](repeating: 0, count: side * side * 4)
+        guard let context = CGContext(
+            data: &pixels,
+            width: side,
+            height: side,
+            bitsPerComponent: 8,
+            bytesPerRow: side * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return nil
+        }
+        context.interpolationQuality = .medium
+        context.draw(image, in: CGRect(x: 0, y: 0, width: side, height: side))
+        return pixels
     }
 }
