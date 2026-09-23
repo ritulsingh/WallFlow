@@ -482,7 +482,7 @@ Found a vulnerability? Please report it privately instead of opening a public is
 
 ## Contributing
 
-Bug reports, small fixes, and focused features are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the project map, and pull-request expectations.
+Bug reports, small fixes, and focused features are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the project map, and pull-request expectations. Everyone participating is expected to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 

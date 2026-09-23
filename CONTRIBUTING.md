@@ -2,6 +2,8 @@
 
 Thanks for helping. WallFlow is a native **macOS 14+** SwiftUI + AppKit app. There is no iOS target and no public video-wallpaper API — the engine places a click-through player just under desktop icons.
 
+By participating in this project, you are expected to uphold our [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Before you start
 
 1. Use **macOS 14** or later and **Xcode 16** or later.
