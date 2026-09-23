@@ -70,9 +70,10 @@ final class DesktopWindowManager {
         let store = SettingsStore.shared
         let globalPlay = store.shouldEnginePlay
         let covered = store.pauseWhenFullscreen ? PlaybackEnvironment.shared.coveredDisplayIDs : []
+        let sleeping = PlaybackEnvironment.shared.sleepingDisplayIDs
 
         for (displayID, window) in windows {
-            if globalPlay && !covered.contains(displayID) {
+            if globalPlay && !covered.contains(displayID) && !sleeping.contains(displayID) {
                 window.videoController.play()
             } else {
                 window.videoController.pause()

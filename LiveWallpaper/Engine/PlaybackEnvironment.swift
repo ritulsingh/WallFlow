@@ -8,6 +8,14 @@ final class PlaybackEnvironment {
     static let shared = PlaybackEnvironment()
 
     private(set) var coveredDisplayIDs: Set<CGDirectDisplayID> = []
+    private(set) var sleepingDisplayIDs: Set<CGDirectDisplayID> = []
+
+    /// True only when every connected display is asleep. Used for whole-app gating
+    /// (SettingsStore.isDisplayAsleep) where per-display state doesn't apply, e.g. rotation.
+    var allDisplaysAsleep: Bool {
+        let screens = NSScreen.screens
+        return !screens.isEmpty && screens.allSatisfy { sleepingDisplayIDs.contains($0.displayID) }
+    }
 
     private var runLoopSource: CFRunLoopSource?
     private var timer: Timer?
@@ -19,6 +27,7 @@ final class PlaybackEnvironment {
         refreshPower()
         refreshFrontmostApp()
         refreshFullscreen()
+        refreshSleepState()
 
         if let source = IOPSNotificationCreateRunLoopSource({ _ in
             DispatchQueue.main.async {
@@ -35,17 +44,14 @@ final class PlaybackEnvironment {
 
         let workspace = NSWorkspace.shared.notificationCenter
         observe(workspace, NSWorkspace.screensDidSleepNotification) {
-            SettingsStore.shared.isDisplayAsleep = true
-            DesktopWindowManager.shared.applyPlaybackState()
+            PlaybackEnvironment.shared.refreshSleepState()
         }
         observe(workspace, NSWorkspace.screensDidWakeNotification) {
-            SettingsStore.shared.isDisplayAsleep = false
-            DesktopWindowManager.shared.applyPlaybackState()
+            PlaybackEnvironment.shared.refreshSleepState()
             DesktopWindowManager.shared.orderWindowsFront()
         }
         observe(workspace, NSWorkspace.didWakeNotification) {
-            SettingsStore.shared.isDisplayAsleep = false
-            DesktopWindowManager.shared.applyPlaybackState()
+            PlaybackEnvironment.shared.refreshSleepState()
         }
         observe(workspace, NSWorkspace.didActivateApplicationNotification) {
             PlaybackEnvironment.shared.refreshFrontmostApp()
@@ -56,6 +62,9 @@ final class PlaybackEnvironment {
         observe(workspace, NSWorkspace.activeSpaceDidChangeNotification) {
             PlaybackEnvironment.shared.refreshFrontmostApp()
             PlaybackEnvironment.shared.refreshFullscreen()
+        }
+        observe(NotificationCenter.default, NSApplication.didChangeScreenParametersNotification) {
+            PlaybackEnvironment.shared.refreshSleepState()
         }
 
         let distributed = DistributedNotificationCenter.default()
@@ -125,6 +134,17 @@ final class PlaybackEnvironment {
         guard next != coveredDisplayIDs else { return }
         coveredDisplayIDs = next
         DesktopWindowManager.shared.applyPlaybackState()
+    }
+
+    /// `screensDidSleepNotification` fires once for the whole system and doesn't say which
+    /// display slept, so each connected display is checked individually with `CGDisplayIsAsleep`.
+    func refreshSleepState() {
+        let next = Self.detectSleepingDisplays()
+        if next != sleepingDisplayIDs {
+            sleepingDisplayIDs = next
+            DesktopWindowManager.shared.applyPlaybackState()
+        }
+        SettingsStore.shared.isDisplayAsleep = allDisplaysAsleep
     }
 
     private func observe(_ center: NotificationCenter, _ name: Notification.Name, handler: @escaping @MainActor () -> Void) {
@@ -213,5 +233,13 @@ final class PlaybackEnvironment {
         }
 
         return covered
+    }
+
+    private static func detectSleepingDisplays() -> Set<CGDirectDisplayID> {
+        var sleeping = Set<CGDirectDisplayID>()
+        for screen in NSScreen.screens where CGDisplayIsAsleep(screen.displayID) != 0 {
+            sleeping.insert(screen.displayID)
+        }
+        return sleeping
     }
 }
